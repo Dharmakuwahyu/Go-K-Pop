@@ -57,14 +57,14 @@ $(function () {
         $('#form-title').text('Buka Lapak Baru');
         $('#form-subtitle').text('Buat campaign group order album baru');
         $('#btn-publish-label').text('Simpan & Publikasikan');
-        $('#btn-batal-edit').addClass('hidden');
+        $('#btn-batal-tambah').removeClass('hidden');
         $('#slots-left-group').addClass('hidden');
         $('#tab-form-label').text('Buka Lapak Baru');
         showTab('form');
     });
 
-    /* Tombol Batal Edit */
-    $('#btn-batal-edit').on('click', function () {
+    /* Tombol Batal tambah */
+    $('#btn-batal-tambah').on('click', function () {
         resetForm();
         editMode = false;
         editId = null;
@@ -321,7 +321,7 @@ $(function () {
         $('#c-group, #c-title, #c-price, #c-slots, #c-slots-left').val('');
         $('#variant-tags, #member-tags').empty();
         $('#slots-left-group').addClass('hidden');
-        $('#btn-batal-edit').addClass('hidden');
+        $('#btn-batal-tambah').removeClass('hidden');
         $('#form-title').text('Buka Lapak Baru');
         $('#form-subtitle').text('Buat campaign group order album baru');
         $('#btn-publish-label').text('Simpan & Publikasikan');

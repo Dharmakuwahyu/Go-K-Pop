@@ -333,7 +333,7 @@
         </div><!-- /campaign-grid -->
     </div><!-- /panel-list -->
 
-    <!-- ══ PANEL: FORM ══ -->
+    <!-- ══ PANEL: FORM  TAMBAH CAMPAIGN══ -->
     <div id="panel-form" class="hidden">
         <div style="max-width:680px">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:1.5rem">
@@ -344,13 +344,13 @@
                         baru</p>
                 </div>
                 <button class="btn btn-ghost"
-                    style="padding:8px 14px;border-radius:10px;font-size:.8rem;white-space:nowrap" id="btn-batal-edit">
+                    style="padding:8px 14px;border-radius:10px;font-size:.8rem;white-space:nowrap" id="btn-batal-tambah">
                     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24">
                         <line x1="18" y1="6" x2="6" y2="18" />
                         <line x1="6" y1="6" x2="18" y2="18" />
                     </svg>
-                    Batal Edit
+                    Batal Tambah
                 </button>
             </div>
 
@@ -534,6 +534,205 @@
         </div>
     </div><!-- /panel-form -->
 
+    <!-- ══ PANEL: FORM UPDATE CAMPAIGN══ -->
+    <div id="panel-form-update" class="hidden">
+        <div style="max-width:680px">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:1.5rem">
+                <div>
+                    <h2 style="font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:4px" id="form-title-update">Edit Campaign</h2>
+                    <p style="font-size:.875rem;color:var(--slate-400)" id="form-subtitle-update">Edit campaign group order album</p>
+                </div>
+                <button class="btn btn-ghost"
+                    style="padding:8px 14px;border-radius:10px;font-size:.8rem;white-space:nowrap" id="btn-batal-edit">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                    Batal Edit
+                </button>
+            </div>
+
+            <form id="campaign-form-update" action="{{ route('admin.store') }}" enctype="multipart/form-data" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="admin-card" style="padding:1.75rem">
+                    <!-- Upload Cover -->
+                    <div class="form-group">
+                        <label class="form-label">Foto / Gambar Cover Album</label>
+                        <input type="file" id="cover-file-input-update" accept="image/jpeg,image/png,image/webp"
+                            style="position:fixed;top:-9999px;left:-9999px;opacity:0;width:1px;height:1px"
+                            name="album_cover" />
+                        @error('album_cover')
+                            <small style="color:#ef4444">
+                                {{ $message }}
+                            </small>
+                        @enderror
+                        <div style="display:flex;justify-content:center">
+                            <div class="cover-upload-wrap" id="cover-upload-wrap-update">
+                                <div class="cover-upload-empty" id="cover-empty-update">
+                                    <div
+                                        style="width:48px;height:48px;border-radius:50%;background:rgba(225,29,72,.1);border:1px solid rgba(225,29,72,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+                                        <svg width="24" height="24" fill="none" stroke="var(--accent-400)"
+                                            stroke-width="2" viewBox="0 0 24 24">
+                                            <path
+                                                d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                                            <circle cx="12" cy="13" r="4" />
+                                        </svg>
+                                    </div>
+                                    <p style="font-size:.875rem;color:#fff;font-weight:600">Drag &amp; Drop atau Klik untuk
+                                        Upload</p>
+                                    <p style="font-size:.75rem;color:var(--slate-500);margin-top:4px">Format JPG/PNG,
+                                        rekomendasi rasio 1:1</p>
+                                </div>
+                                <div class="cover-upload-preview hidden" id="cover-preview-update">
+                                    <img src="" alt="Cover Album" id="cover-preview-img-update" />
+                                    <div class="cover-upload-actions">
+                                        <button class="btn-cover-ganti" id="btn-cover-ganti-update" type="button">
+                                            <svg width="14" height="14" fill="none" stroke="currentColor"
+                                                stroke-width="2" viewBox="0 0 24 24">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                <polyline points="17 8 12 3 7 8" />
+                                                <line x1="12" y1="3" x2="12" y2="15" />
+                                            </svg>
+                                            Ganti
+                                        </button>
+                                        <button class="btn-cover-hapus" id="btn-cover-hapus-update" type="button">
+                                            <svg width="14" height="14" fill="none" stroke="currentColor"
+                                                stroke-width="2" viewBox="0 0 24 24">
+                                                <polyline points="3 6 5 6 21 6" />
+                                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                            </svg>
+                                            Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="c-group">Nama Grup K-Pop</label>
+                        <input type="text" class="form-input no-icon" id="c-group-update"
+                            placeholder="Contoh: NCT 127, Seventeen" name="group_name"
+                            value="{{ old('group_name') }}" />
+                        @error('group_name')
+                            <small style="color:#ef4444">
+                                {{ $message }}
+                            </small>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="c-title">Judul Album</label>
+                        <input type="text" class="form-input no-icon" id="c-title-update" placeholder="Contoh: ISTJ, FML"
+                            name="title" value="{{ old('title') }}" />
+                        @error('title')
+                            <small style="color:#ef4444">
+                                {{ $message }}
+                            </small>
+                        @enderror
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                        <div class="form-group">
+                            <label class="form-label" for="c-price">Estimasi Harga (Rp)</label>
+                            <input type="number" class="form-input no-icon" id="c-price-update" placeholder="285000"
+                                name="price" value="{{ old('price') }}" />
+                            @error('price')
+                                <small style="color:#ef4444">
+                                    {{ $message }}
+                                </small>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="c-slots">Target Kuota Slot</label>
+                            <input type="number" class="form-input no-icon" id="c-slots-update" placeholder="100"
+                                name="slots" value="{{ old('slots') }}" />
+                            @error('slots')
+                                <small style="color:#ef4444">
+                                    {{ $message }}
+                                </small>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Sisa slot (hanya tampil saat edit) -->
+                    <div class="form-group hidden" id="slots-left-group-update">
+                        <label class="form-label" for="c-slots-left">Sisa Slot Tersedia</label>
+                        <input type="number" class="form-input no-icon" id="c-slots-left-update" placeholder="Sisa slot" />
+                    </div>
+
+                    <!-- Varian -->
+                    <div class="form-group">
+                        <label class="form-label">Daftar Varian Album</label>
+                        <div class="tag-add-wrap">
+                            <input type="text" class="form-input no-icon" id="variant-input-update"
+                                placeholder="Ketik nama varian lalu tekan Enter" />
+                            <button class="btn-add-tag" id="btn-add-variant-update" type="button">
+                                <svg width="16" height="16" fill="none" stroke="currentColor"
+                                    stroke-width="2" viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="tag-list" id="variant-tags-update"></div>
+                        @error('variants')
+                            <small style="color:#ef4444">
+                                {{ $message }}
+                            </small>
+                        @enderror
+
+                        @error('variants.*')
+                            <small style="color:#ef4444">
+                                {{ $message }}
+                            </small>
+                        @enderror
+                    </div>
+
+                    <!-- Member -->
+                    <div class="form-group">
+                        <label class="form-label">Daftar Nama Member</label>
+                        <div class="tag-add-wrap">
+                            <input type="text" class="form-input no-icon" id="member-input-update"
+                                placeholder="Ketik nama lalu tekan Enter" />
+                            <button class="btn-add-tag" id="btn-add-member-update" type="button">
+                                <svg width="16" height="16" fill="none" stroke="currentColor"
+                                    stroke-width="2" viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="tag-list" id="member-tags-update"></div>
+                        @error('members')
+                            <small style="color:#ef4444">
+                                {{ $message }}
+                            </small>
+                        @enderror
+                        @error('members.*')
+                            <small style="color:#ef4444">
+                                {{ $message }}
+                            </small>
+                        @enderror
+                    </div>
+
+                    <div style="padding-top:1.25rem;border-top:1px solid rgba(255,255,255,.06)">
+                        <button class="btn btn-accent"
+                            style="width:100%;padding:14px;border-radius:12px;font-size:.875rem" id="btn-publish-update"
+                            type="submit">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                                <polyline points="17 21 17 13 7 13 7 21" />
+                                <polyline points="7 3 7 8 15 8" />
+                            </svg>
+                            <span id="btn-publish-label-update">Ubah &amp; Publikasikan</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div><!-- /panel-form -->
 @endsection
 
 @section('admin_content_custom')
