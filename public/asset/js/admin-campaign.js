@@ -615,7 +615,8 @@ $(function () {
         });
     }
 
-    function showExistingCoverUpdate(url) {
+    // function showExistingCoverUpdate(url) {
+    window.showExistingCoverUpdate = function(url) {
 
         $('#cover-preview-img-update').attr('src', url);
 
@@ -681,7 +682,8 @@ $(function () {
         $input.val('').focus();
     }
 
-    function addTagUpdateManual(listId, val, inputName) {
+    // function addTagUpdateManual(listId, val, inputName) {
+    window.addTagUpdateManual = function (listId, val, inputName) {
 
         $('#' + listId).append(`
         <div class="tag-item">
@@ -790,7 +792,10 @@ $(function () {
 
     $(document).on('click', '.btn-camp-edit', function () {
 
-        resetFormUpdate();
+        // resetFormUpdate();
+        if (!window.isRestoreUpdate) {
+            resetFormUpdate();
+        }
 
         const id = $(this).data('id');
 

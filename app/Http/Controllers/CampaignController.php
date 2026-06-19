@@ -6,6 +6,7 @@ use App\Models\AlbumMember;
 use App\Models\AlbumVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class CampaignController extends Controller
 {
@@ -102,7 +103,7 @@ class CampaignController extends Controller
 
     public function update(Request $request, Album $album)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'group_name'  => 'required|string|max:255',
             'title'       => 'required|string|max:255',
             'price'       => 'required|integer',
@@ -123,6 +124,20 @@ class CampaignController extends Controller
             'variants.required'   => 'Kolom input wajib diisi',
             'members.required'    => 'Kolom input wajib diisi',
         ]);
+
+        if ($validator->fails()) {
+
+            return back()
+                ->withErrors(
+                    $validator,
+                    'updateCampaign'
+                )
+                ->withInput()
+                ->with(
+                    'editing_album_id',
+                    $album->id
+                );
+        }
 
         // update cover jika ada
         if ($request->hasFile('album_cover')) {
@@ -177,7 +192,7 @@ class CampaignController extends Controller
             ->with(
                 'success',
                 'Campaign berhasil diperbarui.'
-                 );
+            );
     }
 
 }

@@ -79,7 +79,7 @@
                         <button class="btn-camp-edit" data-id="{{ $album->id }}" data-group="{{ $album->group_name }}"
                             data-title="{{ $album->title }}" data-price="{{ $album->price }}"
                             data-slots="{{ $album->total_slots }}" data-slots-left="{{ $album->slots_left }}"
-                            data-variants='@json($album->variants->pluck("name"))' data-members='@json($album->members->pluck("name"))'
+                            data-variants='@json($album->variants->pluck('name'))' data-members='@json($album->members->pluck('name'))'
                             data-cover="{{ asset('storage/albums/' . $album->image_url) }}">
                             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
                                 viewBox="0 0 24 24">
@@ -540,8 +540,10 @@
         <div style="max-width:680px">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:1.5rem">
                 <div>
-                    <h2 style="font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:4px" id="form-title-update">Edit blabaCampaign</h2>
-                    <p style="font-size:.875rem;color:var(--slate-400)" id="form-subtitle-update">Edit campaign group order album</p>
+                    <h2 style="font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:4px" id="form-title-update">Edit
+                        blabaCampaign</h2>
+                    <p style="font-size:.875rem;color:var(--slate-400)" id="form-subtitle-update">Edit campaign group
+                        order album</p>
                 </div>
                 <button class="btn btn-ghost"
                     style="padding:8px 14px;border-radius:10px;font-size:.8rem;white-space:nowrap" id="btn-batal-edit">
@@ -617,7 +619,7 @@
                         <input type="text" class="form-input no-icon" id="c-group-update"
                             placeholder="Contoh: NCT 127, Seventeen" name="group_name"
                             value="{{ old('group_name') }}" />
-                        @error('group_name')
+                        @error('group_name', 'updateCampaign')
                             <small style="color:#ef4444">
                                 {{ $message }}
                             </small>
@@ -625,9 +627,9 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="c-title">Judul Album</label>
-                        <input type="text" class="form-input no-icon" id="c-title-update" placeholder="Contoh: ISTJ, FML"
-                            name="title" value="{{ old('title') }}" />
-                        @error('title')
+                        <input type="text" class="form-input no-icon" id="c-title-update"
+                            placeholder="Contoh: ISTJ, FML" name="title" value="{{ old('title') }}" />
+                        @error('title', 'updateCampaign')
                             <small style="color:#ef4444">
                                 {{ $message }}
                             </small>
@@ -638,7 +640,7 @@
                             <label class="form-label" for="c-price">Estimasi Harga (Rp)</label>
                             <input type="number" class="form-input no-icon" id="c-price-update" placeholder="285000"
                                 name="price" value="{{ old('price') }}" />
-                            @error('price')
+                            @error('price', 'updateCampaign')
                                 <small style="color:#ef4444">
                                     {{ $message }}
                                 </small>
@@ -648,7 +650,7 @@
                             <label class="form-label" for="c-slots">Target Kuota Slot</label>
                             <input type="number" class="form-input no-icon" id="c-slots-update" placeholder="100"
                                 name="slots" value="{{ old('slots') }}" />
-                            @error('slots')
+                            @error('slots', 'updateCampaign')
                                 <small style="color:#ef4444">
                                     {{ $message }}
                                 </small>
@@ -659,7 +661,8 @@
                     <!-- Sisa slot (hanya tampil saat edit) -->
                     <div class="form-group hidden" id="slots-left-group-update">
                         <label class="form-label" for="c-slots-left">Sisa Slot Tersedia</label>
-                        <input type="number" class="form-input no-icon" id="c-slots-left-update" placeholder="Sisa slot" />
+                        <input type="number" class="form-input no-icon" id="c-slots-left-update"
+                            placeholder="Sisa slot" />
                     </div>
 
                     <!-- Varian -->
@@ -677,13 +680,13 @@
                             </button>
                         </div>
                         <div class="tag-list" id="variant-tags-update"></div>
-                        @error('variants')
+                        @error('variants', 'updateCampaign')
                             <small style="color:#ef4444">
                                 {{ $message }}
                             </small>
                         @enderror
 
-                        @error('variants.*')
+                        @error('variants.*', 'updateCampaign')
                             <small style="color:#ef4444">
                                 {{ $message }}
                             </small>
@@ -705,12 +708,12 @@
                             </button>
                         </div>
                         <div class="tag-list" id="member-tags-update"></div>
-                        @error('members')
+                        @error('members', 'updateCampaign')
                             <small style="color:#ef4444">
                                 {{ $message }}
                             </small>
                         @enderror
-                        @error('members.*')
+                        @error('members.*', 'updateCampaign')
                             <small style="color:#ef4444">
                                 {{ $message }}
                             </small>
@@ -771,7 +774,25 @@
     </div>
 @endsection
 
+@php
+    $editingAlbum = null;
+
+    if (session('editing_album_id')) {
+        $editingAlbum = \App\Models\Album::with(['variants', 'members'])->find(session('editing_album_id'));
+    }
+@endphp
+
 @section('js_custom')
+    @if ($errors->updateCampaign->any())
+        <script>
+            $(document).ready(function() {
+                $('#panel-list').addClass('hidden');
+                $('#panel-form').addClass('hidden');
+                $('#panel-form-update').removeClass('hidden');
+            });
+        </script>
+    @endif
+
     @if (session('success'))
         <script>
             $(document).ready(function() {
@@ -785,7 +806,77 @@
 
     <script src="{{ asset('asset/js/admin-campaign.js') }}"></script>
 
-    @if (old('variants'))
+    @if ($editingAlbum)
+        <script>
+            window.isRestoreUpdate = true;
+            $(document).ready(function() {
+
+                $('#panel-list').addClass('hidden');
+                $('#panel-form').addClass('hidden');
+                $('#panel-form-update').removeClass('hidden');
+
+                $('#campaign-form-update').attr(
+                    'action',
+                    '/admin/campaign/{{ $editingAlbum->id }}'
+                );
+
+                $('#c-group-update').val(
+                    @json(old('group_name', $editingAlbum->group_name))
+                );
+
+                $('#c-title-update').val(
+                    @json(old('title', $editingAlbum->title))
+                );
+
+                $('#c-price-update').val(
+                    @json(old('price', $editingAlbum->price))
+                );
+
+                $('#c-slots-update').val(
+                    @json(old('slots', $editingAlbum->total_slots))
+                );
+
+                $('#c-slots-left-update').val(
+                    {{ $editingAlbum->slots_left }}
+                );
+
+                $('#slots-left-group-update')
+                    .removeClass('hidden');
+
+                $('#variant-tags-update').empty();
+                $('#member-tags-update').empty();
+
+                const variants = @json(old('variants', $editingAlbum?->variants->pluck('name')->toArray() ?? []));
+
+                variants.forEach(function(item) {
+                    addTagUpdateManual(
+                        'variant-tags-update',
+                        item,
+                        'variants[]'
+                    );
+                });
+
+                const members = @json(old('members', $editingAlbum?->members->pluck('name')->toArray() ?? []));
+
+                members.forEach(function(item) {
+                    addTagUpdateManual(
+                        'member-tags-update',
+                        item,
+                        'members[]'
+                    );
+                });
+
+                @if ($editingAlbum->image_url)
+                    showExistingCoverUpdate(
+                        "{{ asset('storage/albums/' . $editingAlbum->image_url) }}"
+                    );
+                @endif
+            });
+        </script>
+    @endif
+
+
+    @if (old('variants') && !$editingAlbum)
         <script>
             $(document).ready(function() {
                 const oldVariants = @json(old('variants'));
@@ -796,7 +887,7 @@
         </script>
     @endif
 
-    @if (old('members'))
+    @if (old('members') && !$editingAlbum)
         <script>
             $(document).ready(function() {
                 const oldMembers = @json(old('members'));
@@ -807,7 +898,7 @@
         </script>
     @endif
 
-    @if ($errors->any())
+    @if ($errors->any() && !$errors->updateCampaign->any())
         <script>
             $(document).ready(function() {
                 $('#panel-list').addClass('hidden');
