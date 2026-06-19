@@ -5,6 +5,7 @@ use App\Models\Album;
 use App\Models\AlbumMember;
 use App\Models\AlbumVariant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CampaignController extends Controller
 {
@@ -101,7 +102,82 @@ class CampaignController extends Controller
 
     public function update(Request $request, Album $album)
     {
-        dd($album);
+        $request->validate([
+            'group_name'  => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
+            'price'       => 'required|integer',
+            'slots'       => 'required|integer',
+            'album_cover' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'variants'    => 'required|array',
+            'variants.*'  => 'string',
+            'members'     => 'required|array',
+            'members.*'   => 'string',
+        ], [
+            'album_cover.image'   => 'File harus berupa gambar.',
+            'album_cover.mimes'   => 'Format gambar harus JPG, JPEG, PNG, atau WEBP.',
+            'album_cover.max'     => 'Ukuran gambar maksimal 2MB.',
+            'group_name.required' => 'Kolom input wajib diisi',
+            'title.required'      => 'Kolom input wajib diisi',
+            'price.required'      => 'Kolom input wajib diisi',
+            'slots.required'      => 'Kolom input wajib diisi',
+            'variants.required'   => 'Kolom input wajib diisi',
+            'members.required'    => 'Kolom input wajib diisi',
+        ]);
+
+        // update cover jika ada
+        if ($request->hasFile('album_cover')) {
+            if ($album->image_url) {
+                Storage::disk('public')
+                    ->delete('albums/' . $album->image_url);
+            }
+
+            $imageName = $request
+                ->file('album_cover')
+                ->hashName();
+
+            $request
+                ->file('album_cover')
+                ->storeAs(
+                    'albums',
+                    $imageName,
+                    'public'
+                );
+
+            $album->image_url = $imageName;
+        }
+
+        // update album
+        $album->group_name  = $request->group_name;
+        $album->title       = $request->title;
+        $album->price       = $request->price;
+        $album->total_slots = $request->slots;
+
+        $album->save();
+
+        // update variants
+        $album->variants()->delete();
+        foreach ($request->variants as $variant) {
+            AlbumVariant::create([
+                'album_id' => $album->id,
+                'name'     => $variant,
+            ]);
+        }
+
+        // update members
+        $album->members()->delete();
+        foreach ($request->members as $member) {
+            AlbumMember::create([
+                'album_id' => $album->id,
+                'name'     => $member,
+            ]);
+        }
+
+        return redirect()
+            ->back()
+            ->with(
+                'success',
+                'Campaign berhasil diperbarui.'
+                 );
     }
 
 }

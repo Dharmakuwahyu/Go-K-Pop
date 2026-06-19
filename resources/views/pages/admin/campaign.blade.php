@@ -79,7 +79,8 @@
                         <button class="btn-camp-edit" data-id="{{ $album->id }}" data-group="{{ $album->group_name }}"
                             data-title="{{ $album->title }}" data-price="{{ $album->price }}"
                             data-slots="{{ $album->total_slots }}" data-slots-left="{{ $album->slots_left }}"
-                            data-variants='@json($album->variants->pluck("name"))' data-members='@json($album->members->pluck("name"))'>
+                            data-variants='@json($album->variants->pluck("name"))' data-members='@json($album->members->pluck("name"))'
+                            data-cover="{{ asset('storage/albums/' . $album->image_url) }}">
                             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
                                 viewBox="0 0 24 24">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -539,7 +540,7 @@
         <div style="max-width:680px">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:1.5rem">
                 <div>
-                    <h2 style="font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:4px" id="form-title-update">Edit Campaign</h2>
+                    <h2 style="font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:4px" id="form-title-update">Edit blabaCampaign</h2>
                     <p style="font-size:.875rem;color:var(--slate-400)" id="form-subtitle-update">Edit campaign group order album</p>
                 </div>
                 <button class="btn btn-ghost"
@@ -553,13 +554,13 @@
                 </button>
             </div>
 
-            <form id="campaign-form-update" action="{{ route('admin.store') }}" enctype="multipart/form-data" method="POST">
+            <form id="campaign-form-update" action="" enctype="multipart/form-data" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="admin-card" style="padding:1.75rem">
                     <!-- Upload Cover -->
                     <div class="form-group">
-                        <label class="form-label">Foto / Gambar Cover Album</label>
+                        <label class="form-label">Foto / Gambar Cover Album blabla</label>
                         <input type="file" id="cover-file-input-update" accept="image/jpeg,image/png,image/webp"
                             style="position:fixed;top:-9999px;left:-9999px;opacity:0;width:1px;height:1px"
                             name="album_cover" />

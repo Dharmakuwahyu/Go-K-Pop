@@ -26,7 +26,7 @@ Route::get('/member/profile', [ProfileController::class, 'memberProfile'])->name
 Route::get('/admin/dashboard', [AdminDashboardController::class, 'adminDashboard'])->name('admin.dashboard');
 Route::get('/admin/campaign', [CampaignController::class, 'adminCampaign'])->name('admin.campaign');
 Route::post('/admin/campaign', [CampaignController::class, 'store'])->name('admin.store');
-Route::put('/admin/campaign/{album}', [CampaignController::class, 'update'])->name('campaign.update');
+Route::put('/admin/campaign/{album}', [CampaignController::class, 'update'])->name('admin.update');
 
 Route::get('/admin/payment', [AdminPaymentController::class, 'adminPayment'])->name('admin.payment');
 Route::get('/admin/order', [AdminOrderController::class, 'adminOrder'])->name('admin.order');
