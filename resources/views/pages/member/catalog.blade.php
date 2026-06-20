@@ -11,6 +11,43 @@
 
         <div class="album-grid">
 
+            @forelse ($albums as $album)
+                <div class="album-card">
+                    <div class="album-img-wrap">
+                        <button class="like-btn" data-album-id="1"><svg viewBox="0 0 24 24" fill="transparent" stroke="#cbd5e1"
+                                stroke-width="2">
+                                <path
+                                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                            </svg></button>
+                        <img src="https://images.pexels.com/photos/1762537/pexels-photo-1762537.jpeg?auto=compress&cs=tinysrgb&w=600"
+                            alt="ISTJ" loading="lazy">
+                        <div class="album-img-overlay"></div>
+                        <span class="album-slots-badge badge badge-solid-gold">{{ $album->slots_left }} Slots Left</span>
+                    </div>
+                    <div class="album-body">
+                        <p class="album-group">{{ $album->group_name }}</p>
+                        <h3 class="album-title">{{ $album->title }}</h3>
+                        <div class="album-variants">
+                            @foreach ($album->variants as $variant)
+                                <span class="variant-tag">{{ $variant->name }}</span>
+                            @endforeach
+                        </div>
+                        <div class="album-price-row">
+                            <span class="album-price">Rp{{ number_format($album->price) }}</span>
+                            <span class="album-slots-txt">{{ $album->slots_left }}/{{ $album->total_slots }} slot</span>
+                        </div>
+                        <div class="slot-bar">
+                            <div class="slot-fill" style="width:50%;background:#eab308"></div>
+                        </div>
+                        <button class="btn-book js-book-album" data-album-id="1">Book Slot</button>
+                    </div>
+                </div>
+            @empty
+                <div class="empty-state">
+                    <h3>Katalog masih kosong</h3>
+                    <p>Belum ada album yang tersedia saat ini.</p>
+                </div>
+            @endforelse
             <!-- NCT 127 -->
             <div class="album-card">
                 <div class="album-img-wrap">
@@ -107,8 +144,8 @@
             <!-- Stray Kids -->
             <div class="album-card">
                 <div class="album-img-wrap">
-                    <button class="like-btn" data-album-id="4"><svg viewBox="0 0 24 24" fill="transparent" stroke="#cbd5e1"
-                            stroke-width="2">
+                    <button class="like-btn" data-album-id="4"><svg viewBox="0 0 24 24" fill="transparent"
+                            stroke="#cbd5e1" stroke-width="2">
                             <path
                                 d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                         </svg></button>
