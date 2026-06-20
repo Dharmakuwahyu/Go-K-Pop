@@ -20,7 +20,7 @@
                                     d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                             </svg></button>
                         <img src="https://images.pexels.com/photos/1762537/pexels-photo-1762537.jpeg?auto=compress&cs=tinysrgb&w=600"
-                            alt="ISTJ" loading="lazy">
+                            alt="{{ $album->title }}" loading="lazy">
                         <div class="album-img-overlay"></div>
                         <span class="album-slots-badge badge badge-solid-gold">{{ $album->slots_left }} Slots Left</span>
                     </div>
@@ -39,7 +39,7 @@
                         <div class="slot-bar">
                             <div class="slot-fill" style="width:50%;background:#eab308"></div>
                         </div>
-                        <button class="btn-book js-book-album" data-album-id="1">Book Slot</button>
+                        <button class="btn-book js-book-album" data-album-id="{{ $album->id }}">Book Slot</button>
                     </div>
                 </div>
             @empty

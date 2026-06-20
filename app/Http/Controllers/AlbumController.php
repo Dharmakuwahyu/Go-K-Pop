@@ -1,18 +1,27 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Album;
-use Illuminate\Http\Request;
 
 class AlbumController extends Controller
 {
-    function memberCatalog() {
+    public function memberCatalog()
+    {
         $albums = Album::with([
             'variants',
-            'members'
+            'members',
         ])->get();
 
         return view('pages.member.catalog', compact('albums'));
+    }
+
+    public function showFormPembelian(Album $album)
+    {
+        $album->load([
+            'variants',
+            'members',
+        ]);
+
+        return response()->json($album);
     }
 }

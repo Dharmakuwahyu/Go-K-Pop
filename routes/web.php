@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PageController::class, 'landing'])->name('landing');
 // member
 Route::get('/member/catalog', [AlbumController::class, 'memberCatalog'])->name('member.catalog');
+Route::get('/member/catalog/form/{album}', [AlbumController::class, 'showFormPembelian'])->name('member.pesanan.pembelian');
 Route::get('/member/pesanan', [DashboardController::class, 'memberDashboard'])->name('member.pesanan');
 Route::get('/member/wishlist', [WishlistController::class, 'memberWishlist'])->name('member.wishlist');
 Route::get('/member/profile', [ProfileController::class, 'memberProfile'])->name('member.profile');

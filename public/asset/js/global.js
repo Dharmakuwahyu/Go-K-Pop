@@ -252,22 +252,31 @@ GKP.orderModal = {
     _p1: '', _p2: '', _p3: '',
 
     _html() {
-        const album = GKP.albums.find(a => a.id === this._albumId);
+        const album = this._album;
         if (!album) return '';
         const dp1 = Math.round(album.price * 0.35) * this._qty;
-        const av2 = album.members.filter(m => m !== this._p1);
-        const av3 = album.members.filter(m => m !== this._p1 && m !== this._p2);
+        const av2 = album.members.filter(m => m.name !== this._p1);
+
+        const av3 = album.members.filter(
+            m => m.name !== this._p1 &&
+                m.name !== this._p2
+        );
         const canSubmit = this._variant && this._p1;
 
         return `
         <h2 class="modal-title">Formulir Pemesanan</h2>
-        <p class="modal-sub">${album.group} — ${album.title}</p>
+        <p class="modal-sub">${album.group_name} — ${album.title}</p>
 
         <div class="form-group">
             <label class="form-label">Pilih Varian Album</label>
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
                 ${album.variants.map(v => `
-                <button class="order-variant-btn ${this._variant === v ? 'selected' : ''}" data-v="${v}">${v}</button>`).join('')}
+                    <button
+                        class="order-variant-btn ${this._variant == v.id ? 'selected' : ''}"
+                        data-id="${v.id}">
+                        ${v.name}
+                    </button>`
+        ).join('')}
             </div>
         </div>
 
@@ -290,21 +299,36 @@ GKP.orderModal = {
                 <div class="select-wrap">
                     <select class="form-select" id="prio1">
                         <option value="">Prioritas 1</option>
-                        ${album.members.map(m => `<option value="${m}" ${this._p1 === m ? 'selected' : ''}>${m}</option>`).join('')}
+                        ${album.members.map(m => `
+                        <option value="${m.name}"
+                            ${this._p1 === m.name ? 'selected' : ''}>
+                            ${m.name}
+                        </option>
+                        `).join('')}
                     </select>
                     <svg class="select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
                 </div>
                 <div class="select-wrap">
                     <select class="form-select" id="prio2">
                         <option value="">Prioritas 2</option>
-                        ${av2.map(m => `<option value="${m}" ${this._p2 === m ? 'selected' : ''}>${m}</option>`).join('')}
+                        ${av2.map(m => `
+                        <option value="${m.name}"
+                            ${this._p2 === m.name ? 'selected' : ''}>
+                            ${m.name}
+                        </option>
+                        `).join('')}
                     </select>
                     <svg class="select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
                 </div>
                 <div class="select-wrap">
                     <select class="form-select" id="prio3">
                         <option value="">Prioritas 3</option>
-                        ${av3.map(m => `<option value="${m}" ${this._p3 === m ? 'selected' : ''}>${m}</option>`).join('')}
+                        ${av3.map(m => `
+                        <option value="${m.name}"
+                            ${this._p3 === m.name ? 'selected' : ''}>
+                            ${m.name}
+                        </option>
+                        `).join('')}
                     </select>
                     <svg class="select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
                 </div>
@@ -329,11 +353,21 @@ GKP.orderModal = {
         </button>`;
     },
 
-    open(albumId) {
-        this._albumId = albumId;
-        this._variant = null; this._qty = 1;
-        this._p1 = ''; this._p2 = ''; this._p3 = '';
-        $('#order-modal-content').html(this._html());
+    open(album) {
+
+        this._album = album;
+
+        this._variant = null;
+        this._qty = 1;
+
+        this._p1 = '';
+        this._p2 = '';
+        this._p3 = '';
+
+        $('#order-modal-content').html(
+            this._html()
+        );
+
         $('#order-modal').addClass('open');
     },
 
@@ -346,8 +380,12 @@ GKP.orderModal = {
         $(document).on('click', '#order-close', () => this.close());
 
         /* Variant select */
+        // $(document).on('click', '.order-variant-btn', function () {
+        //     GKP.orderModal._variant = $(this).data('v');
+        //     $('#order-modal-content').html(GKP.orderModal._html());
+        // });
         $(document).on('click', '.order-variant-btn', function () {
-            GKP.orderModal._variant = $(this).data('v');
+            GKP.orderModal._variant = $(this).data('id');
             $('#order-modal-content').html(GKP.orderModal._html());
         });
 
@@ -370,7 +408,11 @@ GKP.orderModal = {
         /* Book buttons (album cards) */
         $(document).on('click', '.js-book-album', function () {
             const id = $(this).data('album-id');
-            GKP.orderModal.open(String(id));
+
+            $.get('/member/catalog/form/' + id, function (album) {
+                console.log(album);
+                GKP.orderModal.open(album);
+            });
         });
     },
 };
