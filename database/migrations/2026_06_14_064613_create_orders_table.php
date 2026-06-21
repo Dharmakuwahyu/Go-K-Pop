@@ -19,6 +19,8 @@ return new class extends Migration
             // $table->char('album_id', 36);
             // $table->char('variant_id', 36);
             $table->foreignId('user_id')
+            // sementara dibuat null karena belum ada data di tabel profiles
+                ->nullable()
                 ->comment('Pembeli')
                 ->constrained('profiles')
                 ->restrictOnDelete();

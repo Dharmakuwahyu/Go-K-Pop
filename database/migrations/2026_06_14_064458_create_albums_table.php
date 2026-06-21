@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('slots_left')->comment('Sisa slot yang masih bisa dipesan');
             $table->string('image_url', 500)->nullable()->comment('Link foto cover album');
             $table->enum('status', ['aktif', 'tutup'])->default('aktif');
+            // sementara dibuat null karena belum ada data profiles
             $table->foreignId('created_by')
                 ->nullable()
                 ->constrained('profiles')

@@ -380,10 +380,6 @@ GKP.orderModal = {
         $(document).on('click', '#order-close', () => this.close());
 
         /* Variant select */
-        // $(document).on('click', '.order-variant-btn', function () {
-        //     GKP.orderModal._variant = $(this).data('v');
-        //     $('#order-modal-content').html(GKP.orderModal._html());
-        // });
         $(document).on('click', '.order-variant-btn', function () {
             GKP.orderModal._variant = $(this).data('id');
             $('#order-modal-content').html(GKP.orderModal._html());
@@ -402,7 +398,33 @@ GKP.orderModal = {
         $(document).on('click', '#order-submit', function () {
             if ($(this).prop('disabled')) return;
             GKP.orderModal.close();
-            window.location.href = GKP._memberRoot + 'dashboard.html';
+            $.ajax({
+                url: '/member/orders',
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+
+                    album_id: GKP.orderModal._album.id,
+                    variant_id: GKP.orderModal._variant,
+                    qty: GKP.orderModal._qty,
+                    price_per_album: GKP.orderModal._album.price,
+                    p1: GKP.orderModal._p1,
+                    p2: GKP.orderModal._p2,
+                    p3: GKP.orderModal._p3
+                },
+
+                success: function (response) {
+                    GKP.showToast('Pesanan berhasil dibuat!', 'success');
+
+                    setTimeout(() => {
+                        window.location.href = '/member/catalog';
+                    }, 1000);
+                },
+
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
         });
 
         /* Book buttons (album cards) */
