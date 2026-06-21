@@ -20,7 +20,6 @@ return new class extends Migration
             // $table->char('variant_id', 36);
             $table->foreignId('user_id')
             // sementara dibuat null karena belum ada data di tabel profiles
-                ->nullable()
                 ->comment('Pembeli')
                 ->constrained('profiles')
                 ->restrictOnDelete();
@@ -45,21 +44,6 @@ return new class extends Migration
             ])->default('pending_dp1');
             $table->string('cargo_status', 50)->nullable()->comment('Status kargo (Di Gudang Korea, OTW Indo, dll)');
             $table->timestamp('created_at')->useCurrent();
-
-            // $table->foreign('user_id')
-            //     ->references('id')
-            //     ->on('profiles')
-            //     ->onDelete('restrict');
-
-            // $table->foreign('album_id')
-            //     ->references('id')
-            //     ->on('albums')
-            //     ->onDelete('restrict');
-
-            // $table->foreign('variant_id')
-            //     ->references('id')
-            //     ->on('album_variants')
-            //     ->onDelete('restrict');
         });
     }
 

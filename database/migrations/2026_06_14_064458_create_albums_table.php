@@ -22,7 +22,6 @@ return new class extends Migration
             $table->enum('status', ['aktif', 'tutup'])->default('aktif');
             // sementara dibuat null karena belum ada data profiles
             $table->foreignId('created_by')
-                ->nullable()
                 ->constrained('profiles')
                 ->restrictOnDelete();
             $table->timestamps();
