@@ -12,26 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('wishlists', function (Blueprint $table) {
-            // Primary key gabungan: satu user tidak bisa wishlist album yang sama dua kali
-            // $table->char('user_id', 36);
-            // $table->char('album_id', 36);
+            $table->id();
             $table->foreignId('user_id')->constrained('profiles')->cascadeOnDelete();
             $table->foreignId('album_id')->constrained('albums')->cascadeOnDelete();
-            $table->foreignId('user_id');
-            $table->foreignId('album_id');
             $table->timestamp('created_at')->useCurrent();
-
-            $table->primary(['user_id', 'album_id']);
-
-            // $table->foreign('user_id')
-            //     ->references('id')
-            //     ->on('profiles')
-            //     ->onDelete('cascade');
-
-            // $table->foreign('album_id')
-            //     ->references('id')
-            //     ->on('albums')
-            //     ->onDelete('cascade');
+            
+            // Primary key gabungan: satu user tidak bisa wishlist album yang sama dua kali
+            // $table->primary(['user_id', 'album_id']);
+            // user tidak bisa like album  yang sama dua kali
+            $table->unique(['user_id', 'album_id']);
         });
     }
 
