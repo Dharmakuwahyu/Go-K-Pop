@@ -18,9 +18,9 @@ return new class extends Migration
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->string('full_name', 100);
-            $table->string('email', 150)->unique();
+            // $table->string('email', 150)->unique();
             $table->string('phone', 20)->nullable();
-            $table->text('address')->nullable()->comment('Alamat lengkap pengiriman');
+            $table->text('address')->nullable()->comment('Alamat lengkap');
             $table->string('city', 50)->nullable();
             $table->timestamps();
         });
