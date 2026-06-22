@@ -1,12 +1,23 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
 {
-    function landing() {
+    public function landing()
+    {
+        if (Auth::check()) {
+
+            $role = Auth::user()->profile->role->role;
+
+            if ($role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
+
+            return redirect()->route('member.catalog');
+        }
+        
         return view('pages.index');
     }
 }
