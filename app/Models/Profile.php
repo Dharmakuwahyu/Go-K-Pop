@@ -35,7 +35,7 @@ class Profile extends Model
      */
     public function role(): HasOne
     {
-        return $this->hasOne(UserRole::class, 'user_id', 'id');
+        return $this->hasOne(UserRole::class, 'profile_id', 'id');
     }
  
     /**

@@ -90,6 +90,12 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            $user = Auth::user();
+
+            if ($user->profile->role->role === 'admin') {
+                return redirect('/admin/dashboard');
+            }
+
             return redirect()
                 ->intended('/member/catalog');
         }
@@ -100,5 +106,17 @@ class AuthController extends Controller
             ], 'login')
             ->with('show_login', true)
             ->withInput();
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/')
+            ->with('success', 'Berhasil logout.');
     }
 }
