@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminPaymentController;
 use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'landing'])->name('landing');
+Route::post('/register', [AuthController::class, 'store'])->name('register');
 // member
 Route::get('/member/catalog', [AlbumController::class, 'memberCatalog'])->name('member.catalog');
 Route::get('/member/catalog/form/{album}', [AlbumController::class, 'showFormPembelian'])->name('member.form.pembelian');

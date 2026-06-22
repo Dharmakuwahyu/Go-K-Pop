@@ -138,59 +138,14 @@ $(document).on('click', '#hamburger', function () {
 GKP.authModal = {
     _mode: 'login',
 
-    _html() {
-        const isLogin = this._mode === 'login';
-        return `
-        <div style="text-align:center;margin-bottom:2rem">
-            <h2 class="modal-title">${isLogin ? 'Selamat Datang Kembali' : 'Buat Akun Baru'}</h2>
-            <p class="modal-sub">${isLogin ? 'Masuk ke akun GO K-POP kamu' : 'Daftar untuk mulai booking slot album favorit'}</p>
-        </div>
-        ${!isLogin ? `
-        <div class="form-group">
-            <label class="form-label">Nama Lengkap</label>
-            <div class="input-wrap">
-                <svg class="input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                <input type="text" class="form-input" placeholder="Masukkan nama lengkap" />
-            </div>
-        </div>` : ''}
-        <div class="form-group">
-            <label class="form-label">Email</label>
-            <div class="input-wrap">
-                <svg class="input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                <input type="email" class="form-input" placeholder="nama@email.com" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="form-label">Password</label>
-            <div class="input-wrap">
-                <svg class="input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                <input type="password" class="form-input" id="auth-pw" placeholder="Minimal 8 karakter" />
-                <button type="button" class="input-eye" id="auth-pw-toggle">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" id="auth-eye-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </button>
-            </div>
-        </div>
-        <button class="btn btn-accent" style="width:100%;padding:14px;border-radius:12px;font-size:.875rem;margin-top:4px" id="auth-submit">
-            ${isLogin ? 'Masuk' : 'Daftar Sekarang'}
-        </button>
-        <div style="display:flex;align-items:center;gap:12px;margin:1.5rem 0">
-            <div style="flex:1;height:1px;background:rgba(255,255,255,.1)"></div>
-            <span style="font-size:.75rem;color:#64748b">atau</span>
-            <div style="flex:1;height:1px;background:rgba(255,255,255,.1)"></div>
-        </div>
-        <button class="btn btn-ghost" style="width:100%;padding:12px;border-radius:12px;border-color:rgba(250,204,21,.35);color:#facc15;font-weight:600" id="auth-admin-demo">
-            Masuk sebagai Admin (Demo)
-        </button>
-        <p style="text-align:center;font-size:.875rem;color:#94a3b8;margin-top:1rem">
-            ${isLogin ? 'Belum punya akun?' : 'Sudah punya akun?'}
-            <a href="#" style="color:#f43f5e;font-weight:500" id="auth-switch">${isLogin ? 'Daftar di sini' : 'Masuk di sini'}</a>
-        </p>`;
-    },
-
     open(mode) {
-        this._mode = mode || 'login';
-        $('#auth-modal-content').html(this._html());
+        this._mode = mode || 'register';
+
         $('#auth-modal').addClass('open');
+
+        if (this._mode === 'register') {
+            $('#register-form').removeClass('hidden');
+        }
     },
 
     close() { $('#auth-modal').removeClass('open'); },
@@ -216,11 +171,11 @@ GKP.authModal = {
         });
 
         /* Submit member */
-        $(document).on('click', '#auth-submit', function () {
-            GKP.authModal.close();
-            // window.location.href = GKP._memberRoot + 'catalog.html';
-            window.location.href = '/member/catalog';
-        });
+        // $(document).on('click', '#auth-submit', function () {
+        //     GKP.authModal.close();
+        //     // window.location.href = GKP._memberRoot + 'catalog.html';
+        //     window.location.href = '/member/catalog';
+        // });
 
         /* Demo admin */
         $(document).on('click', '#auth-admin-demo', function () {
@@ -231,8 +186,8 @@ GKP.authModal = {
         /* Switch mode */
         $(document).on('click', '#auth-switch', function (e) {
             e.preventDefault();
-            GKP.authModal._mode = GKP.authModal._mode === 'login' ? 'register' : 'login';
-            $('#auth-modal-content').html(GKP.authModal._html());
+
+            GKP.showToast('Form login belum dibuat', 'default');
         });
 
         /* Open triggers */
