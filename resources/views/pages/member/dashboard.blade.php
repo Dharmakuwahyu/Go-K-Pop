@@ -1,4 +1,4 @@
-@extends('layout.member-login')
+@extends('layout.member')
 
 @section('title', 'Pesanan Saya — GO K-POP')
 
