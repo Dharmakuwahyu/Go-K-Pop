@@ -5,6 +5,7 @@ use App\Models\Profile;
 use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -12,7 +13,7 @@ class AuthController extends Controller
 {
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validated = validator($request->all(), [
             'full_name' => ['required', 'string', 'max:100'],
             'email'     => ['required', 'email', 'unique:users,email'],
             'password'  => ['required', 'min:8'],
@@ -27,6 +28,15 @@ class AuthController extends Controller
             'password.required'  => 'Password wajib diisi.',
             'password.min'       => 'Password minimal 8 karakter.',
         ]);
+
+        if ($validated->fails()) {
+            return back()
+                ->withErrors($validated, 'register')
+                ->with('show_register', true)
+                ->withInput();
+        }
+
+        $validated = $validated->validated();
 
         DB::transaction(function () use ($validated) {
 
@@ -48,6 +58,47 @@ class AuthController extends Controller
         });
 
         return redirect('/')
-            ->with('success', 'Registrasi berhasil. Silakan login.');
+            ->with('success', 'Registrasi berhasil. Silakan login.')
+            ->with('show_login', true);
+    }
+
+    public function login(Request $request)
+    {
+        $validated = validator($request->all(), [
+            'email-login'    => ['required', 'email'],
+            'password-login' => ['required'],
+        ], [
+            'email-login.required'    => 'Email wajib diisi.',
+            'email-login.email'       => 'Format email tidak valid.',
+            'password-login.required' => 'Password wajib diisi.',
+        ]);
+
+        if ($validated->fails()) {
+            return back()
+                ->withErrors($validated->errors(), 'login')
+                ->with('show_login', true)
+                ->withInput();
+        }
+
+        $data = $validated->validated();
+
+        $credentials = [
+            'email'    => $data['email-login'],
+            'password' => $data['password-login'],
+        ];
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            return redirect()
+                ->intended('/member/catalog');
+        }
+
+        return back()
+            ->withErrors([
+                'login' => 'Email atau password salah.',
+            ], 'login')
+            ->with('show_login', true)
+            ->withInput();
     }
 }

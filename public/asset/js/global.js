@@ -139,13 +139,15 @@ GKP.authModal = {
     _mode: 'login',
 
     open(mode) {
-        this._mode = mode || 'register';
+        if (mode === 'register') {
+            $('#login-form').addClass('hidden');
+            $('#register-form').removeClass('hidden');
+        } else {
+            $('#register-form').addClass('hidden');
+            $('#login-form').removeClass('hidden');
+        }
 
         $('#auth-modal').addClass('open');
-
-        if (this._mode === 'register') {
-            $('#register-form').removeClass('hidden');
-        }
     },
 
     close() { $('#auth-modal').removeClass('open'); },
@@ -178,16 +180,24 @@ GKP.authModal = {
         // });
 
         /* Demo admin */
-        $(document).on('click', '#auth-admin-demo', function () {
-            GKP.authModal.close();
-            window.location.href = '/admin/dashboard';
-        });
+        // $(document).on('click', '#auth-admin-demo', function () {
+        //     GKP.authModal.close();
+        //     window.location.href = '/admin/dashboard';
+        // });
 
         /* Switch mode */
-        $(document).on('click', '#auth-switch', function (e) {
+        $(document).on('click', '#show-register', function (e) {
             e.preventDefault();
 
-            GKP.showToast('Form login belum dibuat', 'default');
+            $('#login-form').addClass('hidden');
+            $('#register-form').removeClass('hidden');
+        });
+
+        $(document).on('click', '#show-login', function (e) {
+            e.preventDefault();
+
+            $('#register-form').addClass('hidden');
+            $('#login-form').removeClass('hidden');
         });
 
         /* Open triggers */

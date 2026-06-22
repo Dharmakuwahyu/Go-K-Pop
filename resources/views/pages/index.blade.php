@@ -501,7 +501,7 @@
     </a>
 
     <!-- ═══════ AUTH MODAL ═══════ -->
-    <div class="modal-overlay" id="auth-modal">
+    <div class="modal-overlay {{ session('show_login') || session('show_register') ? 'open' : '' }}" id="auth-modal">
         <div class="modal-box" id="auth-box">
             <button class="modal-close" id="auth-close">
                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
@@ -511,8 +511,81 @@
                 </svg>
             </button>
             <div id="auth-modal-content">
-                <form id="register-form" class="" method="POST" action="{{ route('register') }}">
+                {{-- LOGIN --}}
+                <form id="login-form" class="{{ session('show_login') || $errors->login->any() ? '' : 'hidden' }}" method="POST" action="{{ route('login') }}">
                     @csrf
+
+                    <div style="text-align:center;margin-bottom:2rem">
+                        <h2 class="modal-title">Selamat Datang Kembali</h2>
+                        <p class="modal-sub">
+                            Masuk ke akun GO K-POP kamu
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+
+                        <div class="input-wrap">
+                            <svg class="input-icon" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                <polyline points="22,6 12,13 2,6" />
+                            </svg>
+
+                            <input type="email" class="form-input" name="email-login" placeholder="nama@email.com"
+                                value="{{ old('email-login') }}">
+                            @error('email-login', 'login')
+                                <small style="color:#ef4444">
+                                    {{ $message }}
+                                </small>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+
+                        <div class="input-wrap">
+                            <svg class="input-icon" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+
+                            <input type="password" class="form-input" id="login-pw" name="password-login"
+                                placeholder="Masukkan password">
+                            @error('password-login', 'login')
+                                <small style="color:#ef4444">
+                                    {{ $message }}
+                                </small>
+                            @enderror
+                        </div>
+                    </div>
+                    @error('login', 'login')
+                        <small style="color:#ef4444; display:block; margin-bottom:10px">
+                            {{ $message }}
+                        </small>
+                    @enderror
+
+                    <button type="submit" class="btn btn-accent"
+                        style="width:100%;padding:14px;border-radius:12px;font-size:.875rem;margin-top:4px">
+                        Masuk
+                    </button>
+
+                    <p style="text-align:center;font-size:.875rem;color:#94a3b8;margin-top:1rem">
+                        Belum punya akun?
+
+                        <a href="#" style="color:#f43f5e;font-weight:500" id="show-register">
+                            Daftar di sini
+                        </a>
+                    </p>
+                </form>
+
+
+                {{-- Register --}}
+                <form id="register-form" class="{{ session('show_register') || $errors->register->any() ? '' : 'hidden' }}" method="POST" action="{{ route('register') }}">
+                    @csrf
+
                     <div style="text-align:center;margin-bottom:2rem">
                         <h2 class="modal-title">Buat Akun Baru</h2>
                         <p class="modal-sub">
@@ -532,7 +605,7 @@
 
                             <input type="text" class="form-input" name="full_name"
                                 placeholder="Masukkan nama lengkap" value="{{ old('full_name') }}">
-                            @error('full_name')
+                            @error('full_name', 'register')
                                 <small class="text-danger" style="color:#ef4444">{{ $message }}</small>
                             @enderror
                         </div>
@@ -550,7 +623,7 @@
 
                             <input type="email" class="form-input" name="email" placeholder="nama@email.com"
                                 value="{{ old('email') }}">
-                            @error('email')
+                            @error('email', 'register')
                                 <small class="text-danger" style="color:#ef4444">{{ $message }}</small>
                             @enderror
                         </div>
@@ -568,7 +641,7 @@
 
                             <input type="password" class="form-input" id="auth-pw" name="password"
                                 placeholder="Minimal 8 karakter">
-                            @error('password')
+                            @error('password', 'register')
                                 <small class="text-danger" style="color:#ef4444">{{ $message }}</small>
                             @enderror
                             <button type="button" class="input-eye" id="auth-pw-toggle">
@@ -593,7 +666,7 @@
                     <p style="text-align:center;font-size:.875rem;color:#94a3b8;margin-top:1rem">
                         Sudah punya akun?
 
-                        <a href="#" style="color:#f43f5e;font-weight:500" id="auth-switch">
+                        <a href="#" style="color:#f43f5e;font-weight:500" id="show-login">
                             Masuk di sini
                         </a>
                     </p>
