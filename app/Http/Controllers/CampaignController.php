@@ -5,6 +5,7 @@ use App\Models\Album;
 use App\Models\AlbumMember;
 use App\Models\AlbumVariant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -41,6 +42,18 @@ class CampaignController extends Controller
             'members.required'    => 'Kolom input wajib diisi',
         ]);
 
+        // cek user login
+        $profile = Auth::user()->profile;
+        // cek profile ada
+        if (! $profile) {
+            return back()
+                ->with('error', 'Profile user tidak ditemukan.');
+        }
+        // cek role admin
+        if (! $profile->role || $profile->role->role !== 'admin') {
+            abort(403, 'Anda tidak memiliki akses membuat campaign.');
+        }
+
         // upload cover
         $imageName = null;
 
@@ -68,7 +81,7 @@ class CampaignController extends Controller
             'total_slots' => $request->slots,
             'slots_left'  => $request->slots,
             'image_url'   => $imageName,
-            'created_by'  => null,
+            'created_by'  => $profile->id,
 
             // status biarkan default database
         ]);
