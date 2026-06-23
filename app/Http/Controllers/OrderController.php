@@ -5,11 +5,20 @@ use App\Models\Album;
 use App\Models\Order;
 use App\Models\OrderPriority;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
     public function store(Request $request)
     {
+        $profile = Auth::user()->profile;
+        if (! $profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Profile user belum tersedia.',
+            ], 422);
+        }
+
         $album = Album::findOrFail($request->album_id);
         if ($album->slots_left < $request->qty) {
             return response()->json([
@@ -20,12 +29,12 @@ class OrderController extends Controller
 
         $order = Order::create([
             'order_code'      => 'ORD-' . time(),
-            'user_id'         => null,
+            'user_id'         => $profile->id,
             'album_id'        => $request->album_id,
             'variant_id'      => $request->variant_id,
             'qty'             => $request->qty,
             'price_per_album' => $request->price_per_album,
-            'buyer_name'      => 'Guest',
+            'buyer_name'      => $profile->full_name,
             'buyer_city'      => 'Unknown',
             'status'          => 'pending_dp1',
             'cargo_status'    => 'belum_dikirim',
