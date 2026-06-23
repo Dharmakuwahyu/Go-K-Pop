@@ -408,19 +408,43 @@ GKP.orderModal = {
    LIKE BUTTON (album cards)
    ============================================================ */
 GKP.bindLikes = function () {
+
     $(document).on('click', '.like-btn', function (e) {
+
         e.stopPropagation();
+
         const $btn = $(this);
         const $svg = $btn.find('svg');
-        const isLiked = $btn.hasClass('liked');
-        if (isLiked) {
-            $btn.removeClass('liked');
-            $svg.attr('fill', 'transparent').attr('stroke', '#cbd5e1');
-        } else {
-            $btn.addClass('liked');
-            $svg.attr('fill', '#f472b6').attr('stroke', '#f472b6');
-        }
+        const albumId = $btn.data('album-id');
+
+        $.ajax({
+            url: '/member/wishlist/toggle',
+            method: 'POST',
+            data: {
+                album_id: albumId,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+
+                if (response.liked) {
+
+                    $btn.addClass('liked');
+
+                    $svg.attr('fill', '#f472b6')
+                        .attr('stroke', '#f472b6');
+
+                } else {
+
+                    $btn.removeClass('liked');
+
+                    $svg.attr('fill', 'transparent')
+                        .attr('stroke', '#cbd5e1');
+                }
+            }
+        });
+
     });
+
 };
 
 /* ============================================================

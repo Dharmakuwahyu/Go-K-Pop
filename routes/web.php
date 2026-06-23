@@ -25,6 +25,7 @@ Route::middleware('member')->group(function () {
 // member
     Route::get('/member/catalog', [AlbumController::class, 'memberCatalog'])->name('member.catalog');
     Route::get('/member/catalog/form/{album}', [AlbumController::class, 'showFormPembelian'])->name('member.form.pembelian');
+    Route::post('/member/wishlist/toggle', [WishlistController::class, 'toggle'])->name('member.wishlist.toggle');
     Route::post('/member/orders', [OrderController::class, 'store'])->name('member.orders.store');
     Route::get('/member/pesanan', [DashboardController::class, 'memberDashboard'])->name('member.pesanan');
     Route::get('/member/wishlist', [WishlistController::class, 'memberWishlist'])->name('member.wishlist');

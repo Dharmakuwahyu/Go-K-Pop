@@ -12,9 +12,13 @@
         <div class="album-grid">
 
             @forelse ($albums as $album)
+                @php
+                    $isLiked = in_array($album->id, $wishlistAlbumIds);
+                @endphp
                 <div class="album-card">
                     <div class="album-img-wrap">
-                        <button class="like-btn" data-album-id="1"><svg viewBox="0 0 24 24" fill="transparent" stroke="#cbd5e1"
+                        <button class="like-btn {{ $isLiked ? 'liked' : '' }}"
+                            data-album-id="{{ $album->id }}"><svg viewBox="0 0 24 24" fill="{{ $isLiked ? '#f472b6' : 'transparent' }}" stroke="{{ $isLiked ? '#f472b6' : '#cbd5e1' }}"
                                 stroke-width="2">
                                 <path
                                     d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
