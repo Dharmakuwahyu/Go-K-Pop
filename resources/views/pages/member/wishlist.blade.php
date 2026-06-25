@@ -16,15 +16,67 @@
             </div>
             <div>
                 <h1>Album Favorit Saya</h1>
-                <p>2 album dalam daftar favoritmu</p>
+                <p>{{ $wishlists->count() }} album dalam daftar favoritmu</p>
             </div>
         </div>
 
         <!-- Album grid — hanya album yang di-like (contoh: SEVENTEEN & aespa) -->
         <div class="album-grid">
 
+            @forelse ($wishlists as $wishlist)
+                @php
+                    $album = $wishlist->album;
+                    $isLiked = true;
+                @endphp
+                <div class="album-card">
+                    <div class="album-img-wrap">
+                        <button class="like-btn {{ $isLiked ? 'liked' : '' }}" data-album-id="{{ $album->id }}"><svg
+                                viewBox="0 0 24 24" fill="{{ $isLiked ? '#f472b6' : 'transparent' }}"
+                                stroke="{{ $isLiked ? '#f472b6' : '#cbd5e1' }}" stroke-width="2">
+                                <path
+                                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                            </svg></button>
+                        <img src="https://images.pexels.com/photos/1762537/pexels-photo-1762537.jpeg?auto=compress&cs=tinysrgb&w=600"
+                            alt="{{ $album->title }}" loading="lazy">
+                        <div class="album-img-overlay"></div>
+                        <span class="album-slots-badge badge badge-solid-gold">{{ $album->slots_left }} Slots Left</span>
+                    </div>
+                    <div class="album-body">
+                        <p class="album-group">{{ $album->group_name }}</p>
+                        <h3 class="album-title">{{ $album->title }}</h3>
+                        <div class="album-variants">
+                            @foreach ($album->variants as $variant)
+                                <span class="variant-tag">{{ $variant->name }}</span>
+                            @endforeach
+                        </div>
+                        <div class="album-price-row">
+                            <span class="album-price">Rp{{ number_format($album->price) }}</span>
+                            <span class="album-slots-txt">{{ $album->slots_left }}/{{ $album->total_slots }} slot</span>
+                        </div>
+                        <div class="slot-bar">
+                            <div class="slot-fill" style="width:50%;background:#eab308"></div>
+                        </div>
+                        <button class="btn-book js-book-album" data-album-id="{{ $album->id }}">Book Slot</button>
+                    </div>
+                </div>
+            @empty
+                <!-- Empty state (hidden by default, tampil jika tidak ada favorit) -->
+                <div class="wishlist-empty hidden" id="wishlist-empty">
+                    <div class="wishlist-empty-icon">
+                        <svg width="40" height="40" fill="rgba(244,114,182,.6)" viewBox="0 0 24 24">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                        </svg>
+                    </div>
+                    <h2>Belum ada album favorit</h2>
+                    <p>Yuk, jelajahi katalog dan tandai album impianmu dengan menekan tombol ❤</p>
+                    <a href="catalog.html" class="btn btn-accent" style="padding:12px 24px;border-radius:12px">Jelajah
+                        Katalog</a>
+                </div>
+            @endforelse
+
             <!-- SEVENTEEN — liked -->
-            <div class="album-card wishlist-card">
+            {{-- <div class="album-card wishlist-card">
                 <div class="album-img-wrap">
                     <button class="like-btn liked" data-album-id="2">
                         <svg viewBox="0 0 24 24" fill="#f472b6" stroke="#f472b6" stroke-width="2">
@@ -95,22 +147,10 @@
                     </button>
 
                 </div>
-            </div>
+            </div> --}}
 
         </div>
 
-        <!-- Empty state (hidden by default, tampil jika tidak ada favorit) -->
-        <div class="wishlist-empty hidden" id="wishlist-empty">
-            <div class="wishlist-empty-icon">
-                <svg width="40" height="40" fill="rgba(244,114,182,.6)" viewBox="0 0 24 24">
-                    <path
-                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                </svg>
-            </div>
-            <h2>Belum ada album favorit</h2>
-            <p>Yuk, jelajahi katalog dan tandai album impianmu dengan menekan tombol ❤</p>
-            <a href="catalog.html" class="btn btn-accent" style="padding:12px 24px;border-radius:12px">Jelajah Katalog</a>
-        </div>
 
     </div>
 @endsection

@@ -439,6 +439,15 @@ GKP.bindLikes = function () {
 
                     $svg.attr('fill', 'transparent')
                         .attr('stroke', '#cbd5e1');
+
+                    // khusus halaman wishlist
+                    if (window.location.pathname === '/member/wishlist') {
+
+                        $btn.closest('.album-card').fadeOut(300, function () {
+                            $(this).remove();
+                        });
+
+                    }
                 }
             }
         });

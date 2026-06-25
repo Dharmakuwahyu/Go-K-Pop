@@ -9,7 +9,17 @@ class WishlistController extends Controller
 {
     public function memberWishlist()
     {
-        return view('pages.member.wishlist');
+        $profile = Auth::user()->profile;
+
+        $wishlists = Wishlist::with([
+            'album.variants',
+            'album.members',
+        ])
+            ->where('user_id', $profile->id)
+            ->latest('created_at')
+            ->get();
+
+        return view('pages.member.wishlist', compact('wishlists'));
     }
 
     public function toggle(Request $request)
@@ -23,10 +33,12 @@ class WishlistController extends Controller
             ], 422);
         }
 
+        // cek apakah ada data wishlist
         $wishlist = Wishlist::where('user_id', $profile->id)
             ->where('album_id', $request->album_id)
             ->first();
 
+        // jika ada maka delete
         if ($wishlist) {
 
             $wishlist->delete();
@@ -37,6 +49,7 @@ class WishlistController extends Controller
             ]);
         }
 
+        // jika belum ada tambahkan data wishlist ke tabel
         Wishlist::create([
             'user_id'  => $profile->id,
             'album_id' => $request->album_id,
