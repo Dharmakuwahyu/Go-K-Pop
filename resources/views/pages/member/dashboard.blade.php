@@ -9,9 +9,126 @@
             <p>Lacak status pesanan, upload bukti bayar, dan pantau pengiriman</p>
         </div>
 
+        @foreach ($orders as $order)
+            <div class="order-card">
+                <div class="order-card-header">
+                    <div>
+                        <div class="order-meta-id">{{ $order->order_code }} . {{ $order->formatted_created_at }}</div>
+                        <div class="order-meta-title">{{ $order->album->group_name }} - {{ $order->album->title }}</div>
+                        <div class="order-meta-sub">Varian: {{ $order->variant->name }} | Qty: {{ $order->qty }}</div>
+                        <div class="order-meta-prio">
+                            @foreach ($order->priorities as $priority)
+                                <span class="prio-tag">Prio {{ $priority->priority }}: {{ $priority->member_name }}</span>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div>
+                        {{-- <div class="order-total-label">Total Estimasi</div>
+                        <div class="order-total-val">Rp{{ number_format($order->total_price) }}</div> --}}
+                        <span class="badge badge-{{ $order->status_color }}" style="margin-top:6px;display:inline-flex">
+                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            {{ $order->status_label }}
+                        </span>
+                    </div>
+                </div>
+                <div class="order-card-body">
+                    <!-- Cargo -->
+                    <p style="font-size:.875rem;font-weight:600;color:var(--slate-300);margin-bottom:10px">Status Kargo</p>
+                    <div class="cargo-tracker" style="margin-bottom:1.5rem">
+                        <div class="cargo-step">
+                            <div class="cargo-dot"><svg width="12" height="12" fill="none" stroke="#64748b"
+                                    stroke-width="2.5" viewBox="0 0 24 24">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg></div>
+                            <div class="cargo-label">Di Korea</div>
+                        </div>
+                        <div class="cargo-line"></div>
+                        <div class="cargo-step">
+                            <div class="cargo-dot"><svg width="12" height="12" fill="none" stroke="#64748b"
+                                    stroke-width="2.5" viewBox="0 0 24 24">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg></div>
+                            <div class="cargo-label">OTW Indo</div>
+                        </div>
+                        <div class="cargo-line"></div>
+                        <div class="cargo-step">
+                            <div class="cargo-dot"><svg width="12" height="12" fill="none" stroke="#64748b"
+                                    stroke-width="2.5" viewBox="0 0 24 24">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg></div>
+                            <div class="cargo-label">Tiba Indo</div>
+                        </div>
+                        <div class="cargo-line"></div>
+                        <div class="cargo-step">
+                            <div class="cargo-dot"><svg width="12" height="12" fill="none" stroke="#64748b"
+                                    stroke-width="2.5" viewBox="0 0 24 24">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg></div>
+                            <div class="cargo-label">Dikirim</div>
+                        </div>
+                    </div>
+                    <!-- Rincian -->
+                    <p style="font-size:.875rem;font-weight:600;color:var(--slate-300);margin-bottom:10px">Rincian Biaya</p>
+                    <div class="fin-grid">
+                        <span class="fin-label">Total Estimasi Album</span><span
+                            class="fin-val">Rp{{ number_format($order->total_price) }}</span>
+                        <span class="fin-label">Sudah Dibayar</span><span 
+                            class="fin-val neon">Rp{{ number_format($order->paid_amount) }}</span>
+                        <span class="fin-label">Kekurangan Tahap Ini</span><span
+                            class="fin-val accent">Rp{{ number_format($order->current_payment_amount) }}</span>
+                        <span class="fin-label">Sisa Harga Album</span><span
+                            class="fin-val">Rp{{ number_format($order->remaining_price) }}</span>
+                    </div>
+                    <!-- Bank -->
+                    <div class="bank-info-box">
+                        @if ($order->action_label !== '-')
+                            <div class="bank-info-row">
+                                <div>
+                                    <div class="bank-name">BRI</div>
+                                    <div class="bank-number">1234567890</div>
+                                    <div class="bank-holder">PT. GO K-POP Indonesia</div>
+                                </div>
+                                <button class="btn-copy" data-copy="1234567890">Salin</button>
+                            </div>
+                        @endif
+                        <div class="bank-total-row">
+                            @if ($order->action_label !== '-')
+                                <span>{{ $order->action_label }}</span>
+                                <span>Rp{{ number_format($order->current_payment_amount) }}</span>
+                            @endif
+                        </div>
+                    </div>
+                    @if ($order->action_label !== '-')
+                        <!-- Upload -->
+                        <p style="font-size:.875rem;font-weight:600;color:var(--slate-300);margin-bottom:10px">Upload Bukti
+                            Transfer</p>
+                        <div class="upload-area" id="upload-area-{{ $order->id }}" data-order="{{ $order->id }}">
+                            <svg class="upload-area-icon" width="32" height="32" fill="none"
+                                stroke="var(--slate-500)" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 8px">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            <p>Drag &amp; drop atau klik untuk pilih file</p>
+                            <small>JPG, PNG maks. 5MB</small>
+                            <input type="file" class="upload-input hidden" accept="image/*" />
+                        </div>
+                        <button class="btn btn-accent" data-order-id="{{ $order->id }}"
+                            style="width:100%;margin-top:12px;padding:12px;border-radius:12px">Kirim Bukti
+                            Pembayaran</button>
+                    @endif
+                </div>
+            </div>
+        @endforeach
+
+
         <!-- ══════════════════════════════════════════
-                     ORD-001 — FASE 1: Menunggu DP 1
-                ═══════════════════════════════════════════ -->
+                                     ORD-001 — FASE 1: Menunggu DP 1
+                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -96,11 +213,12 @@
                     </div>
                 </div>
                 <!-- Upload -->
-                <p style="font-size:.875rem;font-weight:600;color:var(--slate-300);margin-bottom:10px">Upload Bukti Transfer
+                <p style="font-size:.875rem;font-weight:600;color:var(--slate-300);margin-bottom:10px">Upload Bukti
+                    Transfer
                     - DP 1</p>
                 <div class="upload-area" id="upload-area-ord1" data-order="ord1">
-                    <svg class="upload-area-icon" width="32" height="32" fill="none" stroke="var(--slate-500)"
-                        stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 8px">
+                    <svg class="upload-area-icon" width="32" height="32" fill="none"
+                        stroke="var(--slate-500)" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 8px">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                         <polyline points="17 8 12 3 7 8" />
                         <line x1="12" y1="3" x2="12" y2="15" />
@@ -115,8 +233,8 @@
         </div>
 
         <!-- ══════════════════════════════════════════
-                     ORD-001-B — FASE 1: Sudah Upload, Menunggu Verifikasi
-                ═══════════════════════════════════════════ -->
+                                     ORD-001-B — FASE 1: Sudah Upload, Menunggu Verifikasi
+                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -162,8 +280,8 @@
         </div>
 
         <!-- ══════════════════════════════════════════
-                     ORD-001-C — FASE 1: Pembayaran Ditolak
-                ═══════════════════════════════════════════ -->
+                                     ORD-001-C — FASE 1: Pembayaran Ditolak
+                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -226,8 +344,8 @@
         </div>
 
         <!-- ══════════════════════════════════════════
-                     ORD-002 — FASE 2: Menunggu DP 2
-                ═══════════════════════════════════════════ -->
+                                     ORD-002 — FASE 2: Menunggu DP 2
+                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -314,8 +432,8 @@
         </div>
 
         <!-- ══════════════════════════════════════════
-                     ORD-003 — FASE 3: Menunggu Kedatangan
-                ═══════════════════════════════════════════ -->
+                                     ORD-003 — FASE 3: Menunggu Kedatangan
+                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -387,8 +505,8 @@
         </div>
 
         <!-- ══════════════════════════════════════════
-                     ORD-004 — FASE 4: Menunggu Pelunasan
-                ═══════════════════════════════════════════ -->
+                                     ORD-004 — FASE 4: Menunggu Pelunasan
+                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -499,8 +617,8 @@
         </div>
 
         <!-- ══════════════════════════════════════════
-                     ORD-005 — FASE 5: Shipped / Selesai
-                ═══════════════════════════════════════════ -->
+                                     ORD-005 — FASE 5: Shipped / Selesai
+                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -600,4 +718,3 @@
     <script src="{{ asset('asset/js/dashboard.js') }}"></script>
     <script src="{{ asset('asset/js/dashboard.js') }}"></script>
 @endsection
-

@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -92,4 +93,113 @@ class Order extends Model
     {
         return $this->hasOne(SortingResult::class, 'order_id', 'id');
     }
+
+    // =============================================
+    // STATUS
+    // =============================================
+    public function getStatusLabelAttribute()
+    {
+        return match ($this->status) {
+            'pending_dp1'         => 'Menunggu DP 1',
+            'dp1_confirmed'       => 'DP 1 Terkonfirmasi',
+            'pending_dp2'         => 'Menunggu DP 2',
+            'dp2_confirmed'       => 'DP 2 Terkonfirmasi',
+            'pending_pelunasan'   => 'Menunggu Pelunasan',
+            'pelunasan_confirmed' => 'Pelunasan Terkonfirmasi',
+            'shipped'             => 'Sudah Dikirim',
+            default               => $this->status,
+        };
+    }
+
+    // pemanggilan status_color
+    public function getStatusColorAttribute()
+    {
+        return match ($this->status) {
+            'pending_dp1',
+            'pending_dp2',
+            'pending_pelunasan'   => 'yellow',
+
+            'dp1_confirmed',
+            'dp2_confirmed',
+            'pelunasan_confirmed' => 'blue',
+
+            'shipped'             => 'green',
+
+            default               => 'yellow',
+        };
+    }
+
+    public function getActionLabelAttribute()
+    {
+        return match ($this->status) {
+            'pending_dp1'       => 'Bayar Sekarang (DP 1)',
+            'pending_dp2'       => 'Bayar Sekarang (DP 2)',
+            'pending_pelunasan' => 'Bayar Pelunasan',
+
+            default             => '-',
+        };
+    }
+
+    // =============================================
+    // PERHITUNGAN HARGA
+    // =============================================
+    // Total harga seluruh album
+    public function getTotalPriceAttribute()
+    {
+        return $this->price_per_album * $this->qty;
+    }
+
+    // DP 1 = 35%
+    public function getDp1AmountAttribute()
+    {
+        return round($this->total_price * 0.35);
+    }
+
+    // DP 2 = 35%
+    public function getDp2AmountAttribute()
+    {
+        return round($this->total_price * 0.35);
+    }
+
+    // Pelunasan = 30%
+    public function getPelunasanAmountAttribute()
+    {
+        return $this->total_price - $this->dp1_amount - $this->dp2_amount;
+    }
+
+    // Nominal yang harus dibayar sesuai status
+    public function getCurrentPaymentAmountAttribute()
+    {
+        return match ($this->status) {
+            'pending_dp1'       => $this->dp1_amount,
+            'pending_dp2'       => $this->dp2_amount,
+            'pending_pelunasan' => $this->pelunasan_amount,
+            default             => 0,
+        };
+    }
+
+    public function getPaidAmountAttribute()
+    {
+        return $this->payments
+            ->where('status', 'verified')
+            ->sum('amount');
+    }
+
+    public function getRemainingPriceAttribute()
+    {
+        return $this->total_price - $this->paid_amount;
+    }
+
+
+    // =============================================
+    // FORMAT
+    // =============================================
+    public function getFormattedCreatedAtAttribute()
+    {
+        Carbon::setLocale('id');
+
+        return $this->created_at
+            ->translatedFormat('d F Y \p\u\k\u\l H.i') . ' WIB';
+    }
+
 }
