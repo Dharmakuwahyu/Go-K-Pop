@@ -117,7 +117,7 @@
                             <small>JPG, PNG maks. 5MB</small>
                             <input type="file" class="upload-input hidden" accept="image/*" />
                         </div>
-                        <button class="btn btn-accent" data-order-id="{{ $order->id }}"
+                        <button class="btn btn-accent btn-upload-payment" data-order-id="{{ $order->id }}"
                             style="width:100%;margin-top:12px;padding:12px;border-radius:12px">Kirim Bukti
                             Pembayaran</button>
                     @endif
@@ -715,6 +715,5 @@
 @endsection
 
 @section('js_custom')
-    <script src="{{ asset('asset/js/dashboard.js') }}"></script>
     <script src="{{ asset('asset/js/dashboard.js') }}"></script>
 @endsection

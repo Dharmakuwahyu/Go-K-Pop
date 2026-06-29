@@ -9,6 +9,7 @@ use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\SortingController;
@@ -28,6 +29,7 @@ Route::middleware('member')->group(function () {
     Route::post('/member/wishlist/toggle', [WishlistController::class, 'toggle'])->name('member.wishlist.toggle');
     Route::post('/member/orders', [OrderController::class, 'store'])->name('member.orders.store');
     Route::get('/member/pesanan', [DashboardController::class, 'memberDashboard'])->name('member.pesanan');
+    Route::post('/member/payments/upload', [PaymentController::class, 'upload'])->name('member.payment.upload');
     Route::get('/member/wishlist', [WishlistController::class, 'memberWishlist'])->name('member.wishlist');
     Route::get('/member/profile', [ProfileController::class, 'memberProfile'])->name('member.profile');
 });
