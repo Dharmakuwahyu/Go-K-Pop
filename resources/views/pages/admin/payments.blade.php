@@ -8,45 +8,55 @@
 
     <div id="payment-list">
 
-        <!-- PAY-001 -->
-        <div class="payment-card" id="pay-001">
-            <div class="payment-proof"
-                data-img="https://images.pexels.com/photos/4386466/pexels-photo-4386466.jpeg?auto=compress&cs=tinysrgb&w=400">
-                <img src="https://images.pexels.com/photos/4386466/pexels-photo-4386466.jpeg?auto=compress&cs=tinysrgb&w=200"
-                    alt="Bukti PAY-001">
+        @forelse ($payments as $payment)
+            <!-- PAY-001 -->
+            <div class="payment-card" id="pay-{{ $payment->id }}">
+                <div class="payment-proof" data-img="{{ asset('storage/payments/' . $payment->proof_image_url) }}">
+                    <img src="{{ asset('storage/payments/' . $payment->proof_image_url) }}"
+                        alt="{{ $payment->payment_code }}">
+                </div>
+                <div class="payment-info">
+                    <div class="payment-id">{{ $payment->payment_code }} <span class="badge badge-yellow"
+                            style="margin-left:6px"><svg width="10" height="10" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg> Menunggu</span></div>
+                    <div class="payment-buyer">{{ $payment->order->buyer_name }}</div>
+                    <div class="payment-album">
+                        {{ $payment->order->album->group_name }}
+                        - {{ $payment->order->album->title }}
+                        - {{ $payment->phase }}</div>
+                    <div class="payment-amount">Rp{{ number_format($payment->amount) }}</div>
+                    <div class="payment-date">
+                        Diupload pada:
+                        {{ $payment->uploaded_at->translatedFormat('d F Y \p\u\k\u\l H.i') }} WIB</div>
+                </div>
+                <div class="payment-actions">
+                    <button class="btn-view-proof" data-img="{{ asset('storage/payments/' . $payment->proof_image_url) }}">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        Lihat Bukti
+                    </button>
+                    <button class="btn-approve" data-pay-id="pay-{{ $payment->id }}"><svg width="14" height="14"
+                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg> Approve</button>
+                    <button class="btn-reject" data-pay-id="pay-{{ $payment->id }}"><svg width="14" height="14"
+                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg> Reject</button>
+                </div>
             </div>
-            <div class="payment-info">
-                <div class="payment-id">PAY-001 <span class="badge badge-yellow" style="margin-left:6px"><svg width="10"
-                            height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                        </svg> Menunggu</span></div>
-                <div class="payment-buyer">Rina Aulia</div>
-                <div class="payment-album">NCT 127 - ISTJ - DP 1</div>
-                <div class="payment-amount">Rp50.000</div>
-                <div class="payment-date">Diupload pada: 15 Januari 2024 pukul 11.00 WIB</div>
+        @empty
+            <div class="empty-state">
+                <p>Tidak ada pembayaran yang menunggu verifikasi.</p>
             </div>
-            <div class="payment-actions">
-                <button class="btn-view-proof"
-                    data-img="https://images.pexels.com/photos/4386466/pexels-photo-4386466.jpeg?auto=compress&cs=tinysrgb&w=800">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                    </svg>
-                    Lihat Resi
-                </button>
-                <button class="btn-approve" data-pay-id="pay-001"><svg width="14" height="14" fill="none"
-                        stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <polyline points="20 6 9 17 4 12" />
-                    </svg> Approve</button>
-                <button class="btn-reject" data-pay-id="pay-001"><svg width="14" height="14" fill="none"
-                        stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg> Reject</button>
-            </div>
-        </div>
+        @endforelse
 
         <!-- PAY-002 -->
         <div class="payment-card" id="pay-002">

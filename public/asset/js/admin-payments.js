@@ -25,24 +25,67 @@ $(function () {
     });
 
     /* ── Approve ──────────────────────────────────────────── */
+    /* ── Approve ──────────────────────────────────────────── */
     $(document).on('click', '.btn-approve', function () {
-        const payId = $(this).data('pay-id');
-        const $card = $('#' + payId);
+        const $btn = $(this);
+        const payId = $btn.data('pay-id').replace('pay-', '');
 
-        // Update badge ke approved
-        $card.find('.payment-id .badge')
-            .removeClass('badge-yellow')
-            .addClass('badge-green')
-            .html('<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Approved');
+        $.ajax({
 
-        // Sembunyikan tombol aksi
-        $card.find('.payment-actions').html(
-            '<span style="font-size:.875rem;color:var(--neon-400);font-weight:600">✓ Pembayaran Dikonfirmasi</span>'
-        );
+            url: '/admin/payment/' + payId + '/approve',
+            method: 'POST',
 
-        GKP.showToast('Pembayaran berhasil dikonfirmasi!', 'success');
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
+
+            success: function (response) {
+
+                GKP.showToast(response.message, 'success');
+
+                location.reload();
+
+            },
+
+            error: function (xhr) {
+
+                let message = 'Terjadi kesalahan.';
+
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    message = xhr.responseJSON.message;
+                }
+
+                GKP.showToast(message, 'error');
+
+            }
+
+        });
+
     });
+    // $(document).on('click', '.btn-approve', function () {
+    //     const payId = $(this).data('pay-id');
+    //     const $card = $('#' + payId);
 
+    //     // Update badge ke approved
+    //     $card.find('.payment-id .badge')
+    //         .removeClass('badge-yellow')
+    //         .addClass('badge-green')
+    //         .html('<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Approved');
+
+    //     // Sembunyikan tombol aksi
+    //     $card.find('.payment-actions').html(
+    //         '<span style="font-size:.875rem;color:var(--neon-400);font-weight:600">✓ Pembayaran Dikonfirmasi</span>'
+    //     );
+
+    //     GKP.showToast('Pembayaran berhasil dikonfirmasi!', 'success');
+    // });
+
+    
     /* ── Buka Reject Modal ────────────────────────────────── */
     $(document).on('click', '.btn-reject', function () {
         const payId = $(this).data('pay-id');
@@ -61,7 +104,7 @@ $(function () {
 
     /* ── Konfirmasi Reject ────────────────────────────────── */
     $('#btn-reject-confirm').on('click', function () {
-        const payId  = $('#reject-pay-id').val();
+        const payId = $('#reject-pay-id').val();
         const reason = $('#reject-reason').val().trim();
 
         if (!reason) {
