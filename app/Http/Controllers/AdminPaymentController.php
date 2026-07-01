@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AdminPaymentController extends Controller
@@ -50,6 +51,25 @@ class AdminPaymentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Pembayaran berhasil diverifikasi.',
+        ]);
+    }
+
+    public function reject(Request $request, Payment $payment)
+    {
+        $request->validate([
+            'reason' => ['required', 'max:255'],
+        ]);
+
+        $payment->update([
+            'status'        => 'rejected',
+            'reject_reason' => $request->reason,
+            'verified_by'   => Auth::user()->profile->id,
+            'verified_at'   => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pembayaran berhasil ditolak.',
         ]);
     }
 }

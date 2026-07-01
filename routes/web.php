@@ -43,6 +43,7 @@ Route::middleware('admin')->group(function () {
 
     Route::get('/admin/payment', [AdminPaymentController::class, 'adminPayment'])->name('admin.payment');
     Route::post('/admin/payment/{payment}/approve', [AdminPaymentController::class, 'approve'])->name('admin.payment.approve');
+    Route::post('/admin/payment/{payment}/reject', [AdminPaymentController::class, 'reject'])->name('admin.payment.reject');
     Route::get('/admin/order', [AdminOrderController::class, 'adminOrder'])->name('admin.order');
     Route::get('/admin/sortingpc', [SortingController::class, 'adminSortingPc'])->name('admin.sorting');
     Route::get('/admin/shipment', [ShipmentController::class, 'adminShipment'])->name('admin.shipment');
