@@ -140,6 +140,13 @@ class Order extends Model
         };
     }
 
+    public function getLatestPaymentAttribute()
+    {
+        return $this->payments
+            ->sortByDesc('uploaded_at')
+            ->first();
+    }
+
     // =============================================
     // PERHITUNGAN HARGA
     // =============================================
@@ -189,7 +196,6 @@ class Order extends Model
     {
         return $this->total_price - $this->paid_amount;
     }
-
 
     // =============================================
     // FORMAT

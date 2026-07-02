@@ -23,8 +23,6 @@
                         </div>
                     </div>
                     <div>
-                        {{-- <div class="order-total-label">Total Estimasi</div>
-                        <div class="order-total-val">Rp{{ number_format($order->total_price) }}</div> --}}
                         <span class="badge badge-{{ $order->status_color }}" style="margin-top:6px;display:inline-flex">
                             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
                                 viewBox="0 0 24 24">
@@ -76,16 +74,63 @@
                     <div class="fin-grid">
                         <span class="fin-label">Total Estimasi Album</span><span
                             class="fin-val">Rp{{ number_format($order->total_price) }}</span>
-                        <span class="fin-label">Sudah Dibayar</span><span 
+                        <span class="fin-label">Sudah Dibayar</span><span
                             class="fin-val neon">Rp{{ number_format($order->paid_amount) }}</span>
                         <span class="fin-label">Kekurangan Tahap Ini</span><span
                             class="fin-val accent">Rp{{ number_format($order->current_payment_amount) }}</span>
                         <span class="fin-label">Sisa Harga Album</span><span
                             class="fin-val">Rp{{ number_format($order->remaining_price) }}</span>
                     </div>
-                    <!-- Bank -->
-                    <div class="bank-info-box">
-                        @if ($order->action_label !== '-')
+                    @if ($order->latest_payment && $order->latest_payment->status == 'pending')
+                        <!-- Waiting verification -->
+                        <div
+                            style="display:flex;align-items:flex-start;gap:12px;padding:1rem;border-radius:12px;background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.25)">
+                            <svg width="20" height="20" fill="none" stroke="#facc15" stroke-width="2"
+                                viewBox="0 0 24 24" style="flex-shrink:0;margin-top:2px;animation:pulseGreen 2s infinite">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            <p style="font-size:.875rem;color:#facc15;line-height:1.6">
+                                <strong>⏳ Bukti transfer telah berhasil diunggah.</strong><br>
+                                Menunggu proses verifikasi dan konfirmasi oleh Admin. Silakan cek berkala.
+                            </p>
+                        </div>
+                    @endif
+                    @if ($order->latest_payment && $order->latest_payment->status == 'verified')
+                        <div
+                            style="display:flex;align-items:flex-start;gap:12px;padding:1rem;border-radius:12px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.25)">
+                            <svg width="20" height="20" fill="none" stroke="#3b82f6" stroke-width="2"
+                                viewBox="0 0 24 24" style="flex-shrink:0;margin-top:2px;animation:pulseGreen 2.5s infinite">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="8 12 11 15 16 9" />
+                            </svg>
+
+                            <p style="font-size:.875rem;color:#3b82f6;line-height:1.6">
+                                <strong>⏳ Pembayaran berhasil diverifikasi.</strong><br>
+                                Menunggu tahap pembayaran selanjutnya dibuka oleh admin.
+                            </p>
+                        </div>
+                    @endif
+                    @if ($order->latest_payment && $order->latest_payment->status == 'rejected')
+                        <div
+                            style="display:flex;align-items:flex-start;gap:12px;padding:1rem;border-radius:12px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25)">
+                            <svg width="20" height="20" fill="none" stroke="#ef4444" stroke-width="2"
+                                viewBox="0 0 24 24" style="flex-shrink:0;margin-top:2px;animation:pulseGreen 2.5s infinite">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="15" y1="9" x2="9" y2="15" />
+                                <line x1="9" y1="9" x2="15" y2="15" />
+                            </svg>
+
+                            <p style="font-size:.875rem;color:#ef4444;line-height:1.6">
+                                <strong>❌ Pembayaran Ditolak!</strong><br>
+                                Alasan Admin:
+                                {{ $order->latest_payment->reject_reason }}
+                            </p>
+                        </div>
+                    @endif
+                    @if ($order->action_label !== '-' && (!$order->latest_payment || $order->latest_payment->status == 'rejected'))
+                        <!-- Bank -->
+                        <div class="bank-info-box">
                             <div class="bank-info-row">
                                 <div>
                                     <div class="bank-name">BRI</div>
@@ -94,21 +139,19 @@
                                 </div>
                                 <button class="btn-copy" data-copy="1234567890">Salin</button>
                             </div>
-                        @endif
-                        <div class="bank-total-row">
-                            @if ($order->action_label !== '-')
+                            <div class="bank-total-row">
                                 <span>{{ $order->action_label }}</span>
                                 <span>Rp{{ number_format($order->current_payment_amount) }}</span>
-                            @endif
+                            </div>
                         </div>
-                    </div>
-                    @if ($order->action_label !== '-')
+
                         <!-- Upload -->
                         <p style="font-size:.875rem;font-weight:600;color:var(--slate-300);margin-bottom:10px">Upload Bukti
                             Transfer</p>
                         <div class="upload-area" id="upload-area-{{ $order->id }}" data-order="{{ $order->id }}">
                             <svg class="upload-area-icon" width="32" height="32" fill="none"
-                                stroke="var(--slate-500)" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 8px">
+                                stroke="var(--slate-500)" stroke-width="1.5" viewBox="0 0 24 24"
+                                style="margin:0 auto 8px">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                                 <polyline points="17 8 12 3 7 8" />
                                 <line x1="12" y1="3" x2="12" y2="15" />
@@ -127,8 +170,8 @@
 
 
         <!-- ══════════════════════════════════════════
-                                     ORD-001 — FASE 1: Menunggu DP 1
-                                ═══════════════════════════════════════════ -->
+                                                                     ORD-001 — FASE 1: Menunggu DP 1
+                                                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -233,8 +276,8 @@
         </div>
 
         <!-- ══════════════════════════════════════════
-                                     ORD-001-B — FASE 1: Sudah Upload, Menunggu Verifikasi
-                                ═══════════════════════════════════════════ -->
+                                                                     ORD-001-B — FASE 1: Sudah Upload, Menunggu Verifikasi
+                                                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -280,8 +323,8 @@
         </div>
 
         <!-- ══════════════════════════════════════════
-                                     ORD-001-C — FASE 1: Pembayaran Ditolak
-                                ═══════════════════════════════════════════ -->
+                                                                     ORD-001-C — FASE 1: Pembayaran Ditolak
+                                                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -344,8 +387,8 @@
         </div>
 
         <!-- ══════════════════════════════════════════
-                                     ORD-002 — FASE 2: Menunggu DP 2
-                                ═══════════════════════════════════════════ -->
+                                                                     ORD-002 — FASE 2: Menunggu DP 2
+                                                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -432,8 +475,8 @@
         </div>
 
         <!-- ══════════════════════════════════════════
-                                     ORD-003 — FASE 3: Menunggu Kedatangan
-                                ═══════════════════════════════════════════ -->
+                                                                     ORD-003 — FASE 3: Menunggu Kedatangan
+                                                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -505,8 +548,8 @@
         </div>
 
         <!-- ══════════════════════════════════════════
-                                     ORD-004 — FASE 4: Menunggu Pelunasan
-                                ═══════════════════════════════════════════ -->
+                                                                     ORD-004 — FASE 4: Menunggu Pelunasan
+                                                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -617,8 +660,8 @@
         </div>
 
         <!-- ══════════════════════════════════════════
-                                     ORD-005 — FASE 5: Shipped / Selesai
-                                ═══════════════════════════════════════════ -->
+                                                                     ORD-005 — FASE 5: Shipped / Selesai
+                                                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
