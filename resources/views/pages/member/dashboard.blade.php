@@ -81,7 +81,7 @@
                         <span class="fin-label">Sisa Harga Album</span><span
                             class="fin-val">Rp{{ number_format($order->remaining_price) }}</span>
                     </div>
-                    @if ($order->latest_payment && $order->latest_payment->status == 'pending')
+                    @if ($order->current_payment && $order->current_payment->status == 'pending')
                         <!-- Waiting verification -->
                         <div
                             style="display:flex;align-items:flex-start;gap:12px;padding:1rem;border-radius:12px;background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.25)">
@@ -96,7 +96,7 @@
                             </p>
                         </div>
                     @endif
-                    @if ($order->latest_payment && $order->latest_payment->status == 'verified')
+                    @if ($order->current_payment && $order->current_payment->status == 'verified')
                         <div
                             style="display:flex;align-items:flex-start;gap:12px;padding:1rem;border-radius:12px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.25)">
                             <svg width="20" height="20" fill="none" stroke="#3b82f6" stroke-width="2"
@@ -111,7 +111,7 @@
                             </p>
                         </div>
                     @endif
-                    @if ($order->latest_payment && $order->latest_payment->status == 'rejected')
+                    @if ($order->current_payment && $order->current_payment->status == 'rejected')
                         <div
                             style="display:flex;align-items:flex-start;gap:12px;padding:1rem;border-radius:12px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25)">
                             <svg width="20" height="20" fill="none" stroke="#ef4444" stroke-width="2"
@@ -124,11 +124,11 @@
                             <p style="font-size:.875rem;color:#ef4444;line-height:1.6">
                                 <strong>❌ Pembayaran Ditolak!</strong><br>
                                 Alasan Admin:
-                                {{ $order->latest_payment->reject_reason }}
+                                {{ $order->current_payment->reject_reason }}
                             </p>
                         </div>
                     @endif
-                    @if ($order->action_label !== '-' && (!$order->latest_payment || $order->latest_payment->status == 'rejected'))
+                    @if ($order->action_label !== '-' && (!$order->current_payment || $order->current_payment->status == 'rejected'))
                         <!-- Bank -->
                         <div class="bank-info-box">
                             <div class="bank-info-row">

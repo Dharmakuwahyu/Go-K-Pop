@@ -140,9 +140,27 @@ class Order extends Model
         };
     }
 
-    public function getLatestPaymentAttribute()
+    public function getCurrentPaymentAttribute()
     {
+        $phase = match ($this->status) {
+            'pending_dp1',
+            'dp1_confirmed'       => 'DP 1',
+
+            'pending_dp2',
+            'dp2_confirmed'       => 'DP 2',
+
+            'pending_pelunasan',
+            'pelunasan_confirmed' => 'Pelunasan',
+
+            default               => null,
+        };
+
+        if (! $phase) {
+            return null;
+        }
+
         return $this->payments
+            ->where('phase', $phase)
             ->sortByDesc('uploaded_at')
             ->first();
     }
