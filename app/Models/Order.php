@@ -101,11 +101,11 @@ class Order extends Model
     {
         return match ($this->status) {
             'pending_dp1'         => 'Menunggu DP 1',
-            'dp1_confirmed'       => 'DP 1 Terkonfirmasi',
+            'dp1_confirmed'       => 'DP 1 Terverifikasi',
             'pending_dp2'         => 'Menunggu DP 2',
-            'dp2_confirmed'       => 'DP 2 Terkonfirmasi',
+            'dp2_confirmed'       => 'DP 2 Terverifikasi',
             'pending_pelunasan'   => 'Menunggu Pelunasan',
-            'pelunasan_confirmed' => 'Pelunasan Terkonfirmasi',
+            'pelunasan_confirmed' => 'Pelunasan Terverifikasi',
             'shipped'             => 'Sudah Dikirim',
             default               => $this->status,
         };

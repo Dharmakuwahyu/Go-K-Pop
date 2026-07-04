@@ -24,11 +24,18 @@
                     </div>
                     <div>
                         <span class="badge badge-{{ $order->status_color }}" style="margin-top:6px;display:inline-flex">
-                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="10" />
-                                <polyline points="12 6 12 12 16 14" />
-                            </svg>
+                            @if (in_array($order->status, ['dp1_confirmed', 'dp2_confirmed', 'pelunasan_confirmed']))
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                            @else
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                </svg>
+                            @endif
                             {{ $order->status_label }}
                         </span>
                     </div>
@@ -78,13 +85,22 @@
                             class="fin-val neon">Rp{{ number_format($order->paid_amount) }}</span>
                         <span class="fin-label">Sisa Harga Album</span><span
                             class="fin-val">Rp{{ number_format($order->remaining_price) }}</span>
-                        <span class="fin-label">Kekurangan Tahap Ini</span><span
-                            class="fin-val accent">Rp{{ number_format($order->current_payment_amount) }}</span>
+                        <span class="fin-label">Kekurangan Tahap Ini</span>
+                        @if ($order->status == 'pelunasan_confirmed')
+                            <span class="fin-val neon">
+                                Rp{{ number_format($order->current_payment_amount) }} (LUNAS)
+                            </span>
+                        @else
+                            <span class="fin-val accent">
+                                Rp{{ number_format($order->current_payment_amount) }}
+                            </span>
+                        @endif
                         @if ($order->status == 'pending_pelunasan')
                             <span class="fin-label" id="shipping-label-{{ $order->id }}">Ongkir Kurir Lokal </span>
                             <span class="fin-val" id="shipping-price-{{ $order->id }}">Rp0</span>
                         @endif
                     </div>
+                    {{-- status pending --}}
                     @if ($order->current_payment && $order->current_payment->status == 'pending')
                         <!-- Waiting verification -->
                         <div
@@ -100,6 +116,7 @@
                             </p>
                         </div>
                     @endif
+                    {{-- status terverifikasi --}}
                     @if ($order->current_payment && $order->current_payment->status == 'verified')
                         <div
                             style="display:flex;align-items:flex-start;gap:12px;padding:1rem;border-radius:12px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.25)">
@@ -111,11 +128,17 @@
                             </svg>
 
                             <p style="font-size:.875rem;color:#3b82f6;line-height:1.6">
-                                <strong>⏳ Pembayaran berhasil diverifikasi.</strong><br>
-                                Menunggu tahap pembayaran selanjutnya dibuka oleh admin.
+                                @if ($order->status == 'pelunasan_confirmed')
+                                    <strong>⏳ Pembayaran Lunas & Terverifikasi.</strong><br>
+                                    Menunggu pesanan dikirim oleh admin.
+                                @else
+                                    <strong>⏳ Pembayaran berhasil diverifikasi.</strong><br>
+                                    Menunggu tahap pembayaran selanjutnya dibuka oleh admin.
+                                @endif
                             </p>
                         </div>
                     @endif
+                    {{-- status ditolak --}}
                     @if ($order->current_payment && $order->current_payment->status == 'rejected')
                         <div
                             style="display:flex;align-items:flex-start;gap:12px;padding:1rem;border-radius:12px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25)">
@@ -148,8 +171,8 @@
                         <div class="form-group">
                             <label class="form-label">Pilihan Kurir</label>
                             <div class="select-wrap">
-                                <select class="form-select courier-select" id="kurir-{{ $order->id }}"
-                                    name="courier" data-order-id="{{ $order->id }}"
+                                <select class="form-select courier-select" id="kurir-{{ $order->id }}" name="courier"
+                                    data-order-id="{{ $order->id }}"
                                     data-album-payment="{{ $order->current_payment_amount }}">
 
                                     <option value="" selected disabled>Pilih kurir</option>
@@ -159,7 +182,8 @@
                                     <option value="jne" {{ $order->shipment?->courier == 'JNE' ? 'selected' : '' }}>
                                         JNE — Rp25.000
                                     </option>
-                                    <option value="sicepat" {{ $order->shipment?->courier == 'SiCepat' ? 'selected' : '' }}>
+                                    <option value="sicepat"
+                                        {{ $order->shipment?->courier == 'SiCepat' ? 'selected' : '' }}>
                                         SiCepat — Rp18.000
                                     </option>
                                 </select>
@@ -205,8 +229,8 @@
                             <small>JPG, PNG maks. 5MB</small>
                             <input type="file" class="upload-input hidden" accept="image/*" />
                         </div>
-                        <button class="btn btn-accent btn-upload-payment" 
-                            data-order-id="{{ $order->id }}" data-status="{{ $order->status }}"
+                        <button class="btn btn-accent btn-upload-payment" data-order-id="{{ $order->id }}"
+                            data-status="{{ $order->status }}"
                             style="width:100%;margin-top:12px;padding:12px;border-radius:12px">Kirim Bukti
                             Pembayaran</button>
                     @endif
@@ -216,8 +240,8 @@
 
 
         <!-- ══════════════════════════════════════════
-                                                                                 ORD-001 — FASE 1: Menunggu DP 1
-                                                                            ═══════════════════════════════════════════ -->
+                                                                                                     ORD-001 — FASE 1: Menunggu DP 1
+                                                                                                ═══════════════════════════════════════════ -->
         {{-- <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -594,8 +618,8 @@
         </div> --}}
 
         <!-- ══════════════════════════════════════════
-                                                                                 ORD-004 — FASE 4: Menunggu Pelunasan
-                                                                            ═══════════════════════════════════════════ -->
+                                                                                                     ORD-004 — FASE 4: Menunggu Pelunasan
+                                                                                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -706,8 +730,8 @@
         </div>
 
         <!-- ══════════════════════════════════════════
-                                                                                 ORD-005 — FASE 5: Shipped / Selesai
-                                                                            ═══════════════════════════════════════════ -->
+                                                                                                     ORD-005 — FASE 5: Shipped / Selesai
+                                                                                                ═══════════════════════════════════════════ -->
         <div class="order-card">
             <div class="order-card-header">
                 <div>
