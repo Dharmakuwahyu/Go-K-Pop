@@ -15,7 +15,7 @@ $(function () {
         if ($(e.target).is('.upload-input')) {
             return;
         }
-        
+
         e.preventDefault();
         e.stopPropagation();
 
@@ -71,19 +71,55 @@ $(function () {
 
         const $btn = $(this);
         const orderId = $btn.data('order-id');
+        const status = $btn.data('status');
         const $area = $btn.closest('.order-card').find('.upload-area');
 
         const file = $area.data('selected-file');
 
+        // inputan alamat
+        const address = $('#address-' + orderId).val();
+        const courier = $('#kurir-' + orderId).val();
+        const shippingCost = {
+            jnt: 20000,
+            jne: 25000,
+            sicepat: 18000
+        }[courier] || 0;
+
+        // validasi bukti transfer
         if (!file) {
             GKP.showToast('Silakan pilih bukti transfer terlebih dahulu.', 'error');
             return;
+        }
+
+        // Data pengiriman (alamat, kurir, ongkir) hanya diperlukan
+        // pada tahap Pelunasan, sehingga wajib diisi sebelum upload.
+        if (status === 'pending_pelunasan') {
+
+            if (!address.trim()) {
+                GKP.showToast('Silakan isi alamat pengiriman.', 'error');
+                return;
+            }
+
+            if (!courier) {
+                GKP.showToast('Silakan pilih kurir.', 'error');
+                return;
+            }
+
         }
 
         const formData = new FormData();
         formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
         formData.append('order_id', orderId);
         formData.append('proof_image', file);
+
+        // Data pengiriman (alamat, kurir, ongkir) hanya diperlukan
+        // pada tahap Pelunasan, sehingga hanya dikirim ketika status
+        // order adalah pending_pelunasan.
+        if (status === 'pending_pelunasan') {
+            formData.append('address', address);
+            formData.append('courier', courier);
+            formData.append('shipping_cost', shippingCost);
+        }
 
         $.ajax({
             url: '/member/payments/upload',
@@ -97,7 +133,6 @@ $(function () {
             },
             success: function (response) {
                 GKP.showToast(response.message, 'success');
-
                 // refresh supaya status terbaru tampil
                 location.reload();
             },
@@ -112,15 +147,67 @@ $(function () {
         });
     });
 
-    /* ── Pilih kurir — update total pelunasan ─────────────── */
-    const ongkirMap = { jnt: 20000, jne: 25000, sicepat: 18000 };
-    $('#kurir-ord4').on('change', function () {
-        const val = $(this).val();
-        const ongkir = ongkirMap[val] || 0;
-        const album = 200000;
-        const total = album + ongkir;
-        // Update label di bank info box (jika perlu, Laravel akan handle datanya)
-        GKP.showToast('Kurir dipilih. Total pelunasan diperbarui.', 'success');
+
+    /* ── Pilih kurir — update rincian ongkir ─────────────── */
+    const ongkirMap = {
+        jnt: 20000,
+        jne: 25000,
+        sicepat: 18000
+    };
+
+    // UJI COBA
+    // Tandai bahwa perubahan dilakukan oleh user.
+    $(document).on('focus', '.courier-select', function () {
+        $(this).data('user-change', true);
+    });
+
+
+    $(document).on('change', '.courier-select', function () {
+
+        const orderId = $(this).data('order-id');
+        const albumPayment = Number($(this).data('album-payment'));
+
+        const value = $(this).val();
+        const ongkir = ongkirMap[value] || 0;
+
+        const kurir = $(this)
+            .find('option:selected')
+            .text()
+            .split('—')[0]
+            .trim();
+
+        $('#shipping-label-' + orderId)
+            .text('Ongkir Kurir Lokal (' + kurir + ')');
+
+        $('#shipping-price-' + orderId)
+            .text('Rp' + ongkir.toLocaleString('id-ID'));
+
+        // Update nominal pembayaran di bank
+        const basePayment = Number($('#bank-total-' + orderId).data('base'));
+        const totalPayment = basePayment + ongkir;
+
+        $('#bank-total-' + orderId)
+            .text('Rp' + totalPayment.toLocaleString('id-ID'));
+
+        // GKP.showToast('Kurir berhasil dipilih.', 'success');
+        // UJI COBA
+        // Tampilkan toast hanya jika user benar-benar mengganti kurir,
+        // bukan saat event change dipanggil otomatis ketika halaman dimuat.
+        if ($(this).data('user-change')) {
+            GKP.showToast('Kurir berhasil dipilih.', 'success');
+            $(this).removeData('user-change');
+        }
+    });
+
+    // UJI COBA
+    // Jika halaman dimuat dan kurir sudah tersimpan dari database,
+    // jalankan event change agar ongkir dan total pembayaran ikut diperbarui.
+    $('.courier-select').each(function () {
+
+        if ($(this).val()) {
+            $(this).trigger('change');
+        }
+
     });
 
 });

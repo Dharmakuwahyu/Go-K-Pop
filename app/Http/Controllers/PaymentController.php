@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Shipment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -12,16 +13,46 @@ class PaymentController extends Controller
 {
     public function upload(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // $validator = Validator::make($request->all(), [
+        //     'order_id'    => ['required', 'exists:orders,id'],
+        //     'proof_image' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
+        // ],
+        // [
+        //     'proof_image.required' => 'Silakan pilih bukti transfer.',
+        //     'proof_image.image'    => 'File harus berupa gambar.',
+        //     'proof_image.mimes'    => 'Format gambar harus JPG, JPEG, atau PNG.',
+        //     'proof_image.max'      => 'Ukuran gambar maksimal 5 MB.',
+        // ]);
+
+        $rules = [
             'order_id'    => ['required', 'exists:orders,id'],
             'proof_image' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
-        ],
-        [
-            'proof_image.required' => 'Silakan pilih bukti transfer.',
-            'proof_image.image'    => 'File harus berupa gambar.',
-            'proof_image.mimes'    => 'Format gambar harus JPG, JPEG, atau PNG.',
-            'proof_image.max'      => 'Ukuran gambar maksimal 5 MB.',
-        ]);
+        ];
+
+        $order = Order::find($request->order_id);
+
+        // jika status pending_pelunasan maka tambahkan validasi untuk
+        // input alamat dan  pilihan kurir
+        if ($order && $order->status === 'pending_pelunasan') {
+            $rules['address']       = ['required', 'string'];
+            $rules['courier']       = ['required', 'string'];
+            $rules['shipping_cost'] = ['required', 'integer'];
+        }
+
+        $validator = Validator::make(
+            $request->all(),
+            $rules,
+            [
+                'proof_image.required'   => 'Silakan pilih bukti transfer.',
+                'proof_image.image'      => 'File harus berupa gambar.',
+                'proof_image.mimes'      => 'Format gambar harus JPG, JPEG, atau PNG.',
+                'proof_image.max'        => 'Ukuran gambar maksimal 5 MB.',
+
+                'address.required'       => 'Silakan isi alamat pengiriman.',
+                'courier.required'       => 'Silakan pilih kurir.',
+                'shipping_cost.required' => 'Ongkir tidak valid.',
+            ]
+        );
 
         if ($validator->fails()) {
             Log::info($validator->errors()->toArray());
@@ -34,7 +65,7 @@ class PaymentController extends Controller
         }
 
         $profile = Auth::user()->profile;
-        $order = Order::findOrFail($request->order_id);
+        $order   = Order::findOrFail($request->order_id);
         if ($order->user_id !== $profile->id) {
             abort(403);
         }
@@ -94,6 +125,25 @@ class PaymentController extends Controller
             'proof_image_url' => $fileName,
             'status'          => 'pending',
         ]);
+
+        // Jika tahap Pelunasan, simpan data pengiriman
+        if ($order->status === 'pending_pelunasan') {
+            Shipment::updateOrCreate(
+                [
+                    'order_id' => $order->id,
+                ],
+                [
+                    'address'       => $request->address,
+                    'courier'       => match ($request->courier) {
+                                            'jnt'     => 'J&T',
+                                            'jne'     => 'JNE',
+                                            'sicepat' => 'SiCepat',
+                                            default   => $request->courier,
+                                        },
+                    'shipping_cost' => $request->shipping_cost,
+                ]
+            );
+        }
 
         return response()->json([
             'success' => true,

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
-            // $table->char('order_id', 36)->unique()->comment('Satu pesanan = satu pengiriman');
             $table->foreignId('order_id')
                 ->unique()
                 ->comment('Satu pesanan = satu pengiriman')
@@ -24,11 +23,6 @@ return new class extends Migration
             $table->string('tracking_number', 50)->nullable()->comment('Nomor resi');
             $table->integer('shipping_cost')->default(0)->comment('Ongkir');
             $table->timestamp('shipped_at')->nullable()->comment('Waktu dikirim');
-
-            // $table->foreign('order_id')
-            //     ->references('id')
-            //     ->on('orders')
-            //     ->onDelete('cascade');
         });
     }
 
