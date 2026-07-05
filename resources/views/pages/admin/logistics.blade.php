@@ -31,20 +31,34 @@
     <!-- Input Resi Domestik -->
     <div class="logistics-section">
         <h2>Input Nomor Resi Domestik</h2>
-        <div style="display:flex;flex-direction:column;gap:10px">
+        <form action="" style="display:flex;flex-direction:column;gap:10px" id="shipment-form">
+            @csrf
             <div class="select-wrap">
-                <select class="form-select" id="resi-order-select">
+                <select class="form-select" id="resi-order-select" name="order_id">
                     <option value="">Pilih pesanan</option>
-                    <option value="ORD-005">ORD-005 - Siti Rahma - NewJeans - Get Up (Jakarta) | J&amp;T</option>
-                    <option value="ORD-004">ORD-004 - Sari Dewi - Stray Kids - 5-STAR (Yogyakarta) | J&amp;T</option>
+                    @foreach ($orders as $order)
+                        <option value="{{ $order->id }}">
+                            {{ $order->order_code }}
+                            -
+                            {{ $order->buyer_name }}
+                            -
+                            {{ $order->album->group_name }}
+                            -
+                            {{ $order->album->title }}
+                            ({{ $order->buyer_city }})
+                            |
+                            {{ $order->shipment->courier }}
+                        </option>
+                    @endforeach
                 </select>
                 <svg class="select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <polyline points="6 9 12 15 18 9" />
                 </svg>
             </div>
-            <input type="text" class="form-input no-icon" id="resi-input"
+            <input type="text" class="form-input no-icon" id="resi-input" name="tracking_number"
                 placeholder="Masukkan nomor resi (contoh: JNT1234567890)" />
-            <button class="btn btn-neon" style="width:100%;padding:14px;border-radius:12px" id="btn-submit-resi">
+            <button class="btn btn-neon" type="submit" style="width:100%;padding:14px;border-radius:12px"
+                id="btn-submit-resi">
                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
                     viewBox="0 0 24 24">
                     <line x1="22" y1="2" x2="11" y2="13" />
@@ -52,7 +66,7 @@
                 </svg>
                 Update Status &amp; Kirim Resi
             </button>
-        </div>
+        </form>
     </div>
 
     <!-- Daftar Pesanan Siap Kirim -->
@@ -67,7 +81,42 @@
             Daftar Pesanan Siap Kirim
         </h2>
         <div id="ready-to-ship-list">
-            <div class="logistics-order-item">
+            @forelse ($orders as $order)
+                <div class="logistics-order-item" data-order-id="{{ $order->id }}">
+                    <div>
+                        <div class="logistics-order-name">
+                            {{ $order->order_code }} - {{ $order->buyer_name }}
+                        </div>
+
+                        <div class="logistics-order-sub">
+                            {{ $order->album->group_name }}
+                            -
+                            {{ $order->album->title }}
+                            |
+                            {{ $order->shipment->courier }}
+                            ({{ $order->buyer_city }})
+                        </div>
+                    </div>
+
+                    @if ($order->shipment->tracking_number)
+                        <span class="resi-badge">
+                            Resi: {{ $order->shipment->tracking_number }}
+                        </span>
+                    @else
+                        <span class="badge badge-yellow" style="font-size:.75rem;padding:5px 12px">
+                            Belum ada resi
+                        </span>
+                    @endif
+
+                </div>
+            @empty
+
+                <div style="padding:20px;text-align:center;color:var(--text-muted)">
+                    🎉 Semua pesanan sudah memiliki nomor resi.
+                </div>
+            @endforelse
+
+            {{-- <div class="logistics-order-item">
                 <div>
                     <div class="logistics-order-name">ORD-005 - Siti Rahma</div>
                     <div class="logistics-order-sub">NewJeans - Get Up | J&amp;T (Jakarta)</div>
@@ -80,7 +129,7 @@
                     <div class="logistics-order-sub">Stray Kids - 5-STAR | J&amp;T (Yogyakarta)</div>
                 </div>
                 <span class="badge badge-yellow" style="font-size:.75rem;padding:5px 12px">Belum ada resi</span>
-            </div>
+            </div> --}}
         </div>
     </div>
 @endsection

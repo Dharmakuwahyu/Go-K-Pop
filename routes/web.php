@@ -47,5 +47,6 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/order', [AdminOrderController::class, 'adminOrder'])->name('admin.order');
     Route::get('/admin/sortingpc', [SortingController::class, 'adminSortingPc'])->name('admin.sorting');
     Route::get('/admin/shipment', [ShipmentController::class, 'adminShipment'])->name('admin.shipment');
+    Route::post('/admin/shipment/update-resi', [ShipmentController::class, 'updateResi'])->name('admin.shipment.updateResi');
     Route::get('/admin/store-setting', [StoreSettingController::class, 'adminStoreSetting'])->name('admin.setting');
 });
