@@ -20,7 +20,17 @@
         </h2>
 
         <div class="sorting-member-grid" id="member-inputs">
-            <!-- Di-render oleh JS -->
+            @foreach ($members as $member)
+                <div class="sorting-member-row">
+                    <span class="sorting-member-name">
+                        {{ $member }}
+                    </span>
+
+                    <input type="number" min="0" class="form-input no-icon"
+                        style="padding:10px 12px;font-size:.875rem" placeholder="0" data-member="{{ $member }}"
+                        id="card-{{ \Illuminate\Support\Str::slug($member) }}">
+                </div>
+            @endforeach
         </div>
 
         <button class="btn btn-neon" style="width:100%;padding:14px;border-radius:14px;margin-top:1.5rem;font-size:.9rem"
@@ -31,6 +41,21 @@
             Jalankan Sorting Otomatis
         </button>
     </div>
+
+    {{-- Debug --}}
+    {{-- <pre>
+    @foreach ($orders as $order)
+    Order : {{ $order->order_code }}
+    Buyer : {{ $order->buyer_name }}
+
+    @foreach ($order->priorities as $priority)
+    Prioritas {{ $priority->priority }} :
+    {{ $priority->member_name }}
+    @endforeach
+
+    ----------------------------
+    @endforeach
+    </pre> --}}
 
     <!-- Hasil sorting (hidden by default) -->
     <div class="admin-card hidden" id="sorting-result">

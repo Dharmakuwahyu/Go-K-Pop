@@ -94,6 +94,16 @@ class Order extends Model
         return $this->hasOne(SortingResult::class, 'order_id', 'id');
     }
 
+    /**
+     * Pembayaran DP1 yang sudah diverifikasi.
+     */
+    public function dp1Payment(): HasOne
+    {
+        return $this->hasOne(Payment::class, 'order_id', 'id')
+            ->where('phase', 'DP 1')
+            ->where('status', 'verified');
+    }
+
     // =============================================
     // STATUS
     // =============================================

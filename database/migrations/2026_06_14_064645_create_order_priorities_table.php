@@ -13,17 +13,11 @@ return new class extends Migration
     {
         Schema::create('order_priorities', function (Blueprint $table) {
             $table->id();
-            // $table->char('order_id', 36);
             $table->foreignId('order_id')
                 ->constrained('orders')
                 ->cascadeOnDelete();
             $table->tinyInteger('priority')->comment('Angka 1, 2, atau 3');
             $table->string('member_name', 100)->comment('Nama member pilihan');
-
-            // $table->foreign('order_id')
-            //     ->references('id')
-            //     ->on('orders')
-            //     ->onDelete('cascade');
 
             // Satu pesanan tidak boleh punya dua prioritas yang sama
             $table->unique(['order_id', 'priority']);

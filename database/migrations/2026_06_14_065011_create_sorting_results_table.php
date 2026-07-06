@@ -13,26 +13,14 @@ return new class extends Migration
     {
         Schema::create('sorting_results', function (Blueprint $table) {
             $table->id();
-            // $table->char('session_id', 36);
             $table->foreignId('session_id')
                 ->constrained('sorting_sessions')
                 ->cascadeOnDelete();
-            // $table->char('order_id', 36);
             $table->foreignId('order_id')
                 ->constrained('orders')
                 ->cascadeOnDelete();
             $table->string('assigned_member', 100)->comment('Member yang didapat dari sortir');
             $table->timestamp('created_at')->useCurrent();
-
-            // $table->foreign('session_id')
-            //     ->references('id')
-            //     ->on('sorting_sessions')
-            //     ->onDelete('cascade');
-
-            // $table->foreign('order_id')
-            //     ->references('id')
-            //     ->on('orders')
-            //     ->onDelete('cascade');
         });
     }
 

@@ -31,16 +31,6 @@ return new class extends Migration
                 ->nullOnDelete();
             $table->timestamp('uploaded_at')->useCurrent()->comment('Waktu upload bukti');
             $table->timestamp('verified_at')->nullable()->comment('Waktu diverifikasi');
-
-            // $table->foreign('order_id')
-            //     ->references('id')
-            //     ->on('orders')
-            //     ->onDelete('cascade');
-
-            // $table->foreign('verified_by')
-            //     ->references('id')
-            //     ->on('profiles')
-            //     ->onDelete('set null');
         });
     }
 
