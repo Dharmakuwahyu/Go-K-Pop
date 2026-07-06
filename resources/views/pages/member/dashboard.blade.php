@@ -24,7 +24,7 @@
                     </div>
                     <div>
                         <span class="badge badge-{{ $order->status_color }}" style="margin-top:6px;display:inline-flex">
-                            @if (in_array($order->status, ['dp1_confirmed', 'dp2_confirmed', 'pelunasan_confirmed']))
+                            @if (in_array($order->status, ['dp1_confirmed', 'dp2_confirmed', 'pelunasan_confirmed', 'shipped']))
                                 <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
                                     viewBox="0 0 24 24">
                                     <polyline points="20 6 9 17 4 12" />
@@ -86,7 +86,7 @@
                         <span class="fin-label">Sisa Harga Album</span><span
                             class="fin-val">Rp{{ number_format($order->remaining_price) }}</span>
                         <span class="fin-label">Kekurangan Tahap Ini</span>
-                        @if ($order->status == 'pelunasan_confirmed')
+                        @if ($order->status == 'pelunasan_confirmed' || $order->status == 'shipped')
                             <span class="fin-val neon">
                                 Rp{{ number_format($order->current_payment_amount) }} (LUNAS)
                             </span>
@@ -157,6 +157,7 @@
                             </p>
                         </div>
                     @endif
+                    {{-- tampilkan inputan alamat & kurir jika di fase pending_pelunasan --}}
                     @if ($order->status == 'pending_pelunasan')
                         <!-- Alamat -->
                         <br>
@@ -192,6 +193,42 @@
                                     <polyline points="6 9 12 15 18 9" />
                                 </svg>
                             </div>
+                        </div>
+                    @endif
+                    {{-- tampilkan informasi alamat, kurir, dan no resi jika pesanan sudah dikirim oleh admin --}}
+                    @if ($order->status == 'shipped' && $order->shipment)
+                        <!-- Verified badge -->
+                        <div style="display:flex;align-items:flex-start;gap:12px;padding:1rem;border-radius:12px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25)">
+                            <svg width="20" height="20" fill="none" stroke="#22c55e" stroke-width="2"
+                                viewBox="0 0 24 24"
+                                style="flex-shrink:0;margin-top:2px;animation:pulseGreen 2.5s infinite">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="8 12 11 15 16 9" />
+                            </svg>
+                            <p style="font-size:.875rem;color:#22c55e;line-height:1.6">
+                                <strong>📦 Pesanan Sudah Dikirim.</strong><br>
+                                Nomor resi telah diterbitkan. Silakan gunakan nomor resi di bawah untuk melacak paket Anda.
+                            </p>
+                        </div>
+                        <br>
+                        <!-- Alamat readonly -->
+                        <div class="form-group">
+                            <label class="form-label" style="color:var(--slate-500)">Alamat Pengiriman</label>
+                            <div class="readonly-field">{{ $order->shipment->address }}</div>
+                        </div>
+                        <!-- Kurir readonly -->
+                        <div class="form-group">
+                            <label class="form-label" style="color:var(--slate-500)">Kurir</label>
+                            <div class="readonly-field">{{ $order->shipment->courier }}</div>
+                        </div>
+                        <!-- Tracking -->
+                        <div class="tracking-box">
+                            <div>
+                                <div class="tracking-label"> Nomor Resi Resmi ({{ $order->shipment->courier }})</div>
+                                <div class="tracking-number">{{ $order->shipment->tracking_number }}</div>
+                            </div>
+                            <button class="btn-copy" data-copy="{{ $order->shipment->tracking_number }}">Salin
+                                Resi</button>
                         </div>
                     @endif
                     @if ($order->action_label !== '-' && (!$order->current_payment || $order->current_payment->status == 'rejected'))
@@ -240,8 +277,8 @@
 
 
         <!-- ══════════════════════════════════════════
-                                                                                                     ORD-001 — FASE 1: Menunggu DP 1
-                                                                                                ═══════════════════════════════════════════ -->
+                                                                                                             ORD-001 — FASE 1: Menunggu DP 1
+                                                                                                        ═══════════════════════════════════════════ -->
         {{-- <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -618,9 +655,9 @@
         </div> --}}
 
         <!-- ══════════════════════════════════════════
-                                                                                                     ORD-004 — FASE 4: Menunggu Pelunasan
-                                                                                                ═══════════════════════════════════════════ -->
-        <div class="order-card">
+                                                                                                             ORD-004 — FASE 4: Menunggu Pelunasan
+                                                                                                        ═══════════════════════════════════════════ -->
+        {{-- <div class="order-card">
             <div class="order-card-header">
                 <div>
                     <div class="order-meta-id">ORD-004 · 8 Januari 2024 pukul 06.00 WIB</div>
@@ -727,12 +764,12 @@
                 <button class="btn btn-accent" style="width:100%;margin-top:12px;padding:12px;border-radius:12px">Kirim
                     Pelunasan</button>
             </div>
-        </div>
+        </div> --}}
 
         <!-- ══════════════════════════════════════════
-                                                                                                     ORD-005 — FASE 5: Shipped / Selesai
-                                                                                                ═══════════════════════════════════════════ -->
-        <div class="order-card">
+                                                                                                             ORD-005 — FASE 5: Shipped / Selesai
+                                                                                                        ═══════════════════════════════════════════ -->
+        {{-- <div class="order-card">
             <div class="order-card-header">
                 <div>
                     <div class="order-meta-id">ORD-005 · 5 Januari 2024 pukul 05.00 WIB</div>
@@ -822,7 +859,7 @@
                     <button class="btn-copy" data-copy="JNT1234567890">Salin Resi</button>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
     </div><!-- /container -->
 @endsection
