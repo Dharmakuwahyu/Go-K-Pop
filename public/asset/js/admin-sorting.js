@@ -3,33 +3,59 @@
  * Input kartu per member & sorting otomatis
  */
 $(function () {
+    let sortingSessionId = null;
+    let sortingResult = [];
+    let selectedOrders = [];
 
-    // const members = ['Jaehyun','Mark','Taeyong','Yuta','Doyoung','Johnny','Haechan','Jungwoo','Taeil'];
+    $('#album-select').on('change', function () {
 
-    // const mockResults = [
-    //     { member:'Jaehyun', buyer:'Rina Aulia',      priority:1, timestamp:'2024-01-15T10:30:00' },
-    //     { member:'Jaehyun', buyer:'Dinda Putri',     priority:2, timestamp:'2024-01-15T11:00:00' },
-    //     { member:'Mark',    buyer:'Sari Dewi',       priority:1, timestamp:'2024-01-15T08:15:00' },
-    //     { member:'Taeyong', buyer:'Maya Sari',       priority:1, timestamp:'2024-01-15T09:00:00' },
-    //     { member:'Yuta',    buyer:'Luna Azzahra',    priority:1, timestamp:'2024-01-15T07:45:00' },
-    //     { member:'Haechan', buyer:'Fitri Handayani', priority:1, timestamp:'2024-01-15T10:00:00' },
-    //     { member:'Doyoung', buyer:'Anisa Rahma',     priority:2, timestamp:'2024-01-15T12:00:00' },
-    //     { member:'Johnny',  buyer:'Putri Ayu',       priority:1, timestamp:'2024-01-15T09:30:00' },
-    // ];
+        const albumId = $(this).val();
 
-    // /* ── Render input grid ─────────────────────────────────── */
-    // members.forEach(function (m) {
-    //     $('#member-inputs').append(`
-    //         <div class="sorting-member-row">
-    //             <span class="sorting-member-name">${m}</span>
-    //             <input type="number" min="0" class="form-input no-icon" style="padding:10px 12px;font-size:.875rem"
-    //                 placeholder="0" data-member="${m}" id="card-${m.toLowerCase()}" />
-    //         </div>
-    //     `);
-    // });
+        $('#member-inputs').empty();
+
+        if (!albumId) {
+            return;
+        }
+
+        $.get('/admin/sortingpc/album/' + albumId, function (response) {
+
+            selectedOrders = response.orders;
+
+            response.members.forEach(function (member) {
+
+                $('#member-inputs').append(`
+                <div class="sorting-member-row">
+                    <span class="sorting-member-name">
+                        ${member}
+                    </span>
+
+                    <input
+                        type="number"
+                        min="0"
+                        class="form-input no-icon"
+                        style="padding:10px 12px;font-size:.875rem"
+                        placeholder="0"
+                        data-member="${member}"
+                        id="card-${member.toLowerCase().replace(/\s+/g, '-')}"
+                    />
+                </div>
+            `);
+
+            });
+
+        });
+
+    });
 
     /* ── Jalankan sorting ──────────────────────────────────── */
     $('#btn-run-sorting').on('click', function () {
+
+        const albumId = $('#album-select').val();
+
+        if (!albumId) {
+            GKP.showToast('Silakan pilih album terlebih dahulu.', 'warning');
+            return;
+        }
 
         let members = {};
 
@@ -50,10 +76,13 @@ $(function () {
             },
 
             data: {
+                album_id: albumId,
                 members: members
             },
 
             success: function (response) {
+                sortingSessionId = response.session_id;
+                sortingResult = response.result;
 
                 const $tbody = $('#sorting-result-tbody').empty();
 
@@ -88,6 +117,9 @@ $(function () {
 
                 // === Bagian ini sengaja dipertahankan seperti semula ===
                 $('#sorting-result').removeClass('hidden');
+
+                // Tampilkan tombol simpan hasil sorting
+                $('#btn-save-sorting').removeClass('hidden');
 
                 GKP.showToast('Sorting selesai! Lihat hasil di bawah.', 'success');
 

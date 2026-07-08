@@ -6,11 +6,34 @@
     <h1 class="admin-panel-title">Sorting Photocard Otomatis</h1>
     <p class="admin-panel-sub">Masukkan jumlah kartu fisik per member, lalu jalankan sorting</p>
 
+    <div class="admin-card">
+
+        <h2 style="font-size:1.125rem;font-weight:700;color:#fff;margin-bottom:1rem">
+            Pilih Album
+        </h2>
+
+        <select id="album-select" class="form-input">
+
+            <option value="">
+                -- Pilih Album --
+            </option>
+
+            @foreach ($albums as $album)
+                <option value="{{ $album->id }}">
+                    {{ $album->group_name }} - {{ $album->title }}
+                </option>
+            @endforeach
+
+        </select>
+
+    </div>
+
     <!-- Input kartu per member -->
     <div class="admin-card">
         <h2
             style="font-size:1.125rem;font-weight:700;color:#fff;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px">
-            <svg width="20" height="20" fill="none" stroke="var(--accent-400)" stroke-width="2" viewBox="0 0 24 24">
+            <svg width="20" height="20" fill="none" stroke="var(--accent-400)" stroke-width="2"
+                viewBox="0 0 24 24">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
                 <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
@@ -20,7 +43,7 @@
         </h2>
 
         <div class="sorting-member-grid" id="member-inputs">
-            @foreach ($members as $member)
+            {{-- @foreach ($members as $member)
                 <div class="sorting-member-row">
                     <span class="sorting-member-name">
                         {{ $member }}
@@ -30,7 +53,7 @@
                         style="padding:10px 12px;font-size:.875rem" placeholder="0" data-member="{{ $member }}"
                         id="card-{{ \Illuminate\Support\Str::slug($member) }}">
                 </div>
-            @endforeach
+            @endforeach --}}
         </div>
 
         <button class="btn btn-neon" style="width:100%;padding:14px;border-radius:14px;margin-top:1.5rem;font-size:.9rem"
@@ -41,21 +64,6 @@
             Jalankan Sorting Otomatis
         </button>
     </div>
-
-    {{-- Debug --}}
-    {{-- <pre>
-    @foreach ($orders as $order)
-    Order : {{ $order->order_code }}
-    Buyer : {{ $order->buyer_name }}
-
-    @foreach ($order->priorities as $priority)
-    Prioritas {{ $priority->priority }} :
-    {{ $priority->member_name }}
-    @endforeach
-
-    ----------------------------
-    @endforeach
-    </pre> --}}
 
     <!-- Hasil sorting (hidden by default) -->
     <div class="admin-card hidden" id="sorting-result">
@@ -83,6 +91,11 @@
                 </thead>
                 <tbody id="sorting-result-tbody"></tbody>
             </table>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:1.5rem">
+            <button class="btn btn-neon hidden" id="btn-save-sorting">
+                Simpan Hasil Sorting
+            </button>
         </div>
     </div>
 @endsection
