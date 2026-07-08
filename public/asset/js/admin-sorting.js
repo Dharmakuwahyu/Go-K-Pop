@@ -7,6 +7,7 @@ $(function () {
     let sortingResult = [];
     let selectedOrders = [];
 
+    // Tampilkan daftar member prioritas yang dipilih
     $('#album-select').on('change', function () {
 
         const albumId = $(this).val();
@@ -53,7 +54,7 @@ $(function () {
         const albumId = $('#album-select').val();
 
         if (!albumId) {
-            GKP.showToast('Silakan pilih album terlebih dahulu.', 'warning');
+            GKP.showToast('Silakan pilih album terlebih dahulu.', 'error');
             return;
         }
 
@@ -132,35 +133,40 @@ $(function () {
         });
 
     });
-    // $('#btn-run-sorting').on('click', function () {
-    //     // Render hasil
-    //     const $tbody = $('#sorting-result-tbody').empty();
 
-    //     mockResults.forEach(function (r) {
-    //         const time = new Date(r.timestamp).toLocaleString('id-ID', {
-    //             day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
-    //         });
-    //         const prioBadge = r.priority === 1
-    //             ? '<span class="prio-tag-neon">Prio 1</span>'
-    //             : '<span class="prio-tag-gold">Prio 2</span>';
+    // simpan data hasil sorting
+    $('#btn-save-sorting').on('click', function () {
 
-    //         $tbody.append(`
-    //             <tr>
-    //                 <td><span class="member-tag">${r.member}</span></td>
-    //                 <td style="color:#fff;font-weight:500">${r.buyer}</td>
-    //                 <td>${prioBadge}</td>
-    //                 <td style="color:var(--slate-400);font-size:.75rem">${time}</td>
-    //             </tr>
-    //         `);
-    //     });
+        $.ajax({
 
-    //     $('#sorting-result').removeClass('hidden');
-    //     GKP.showToast('Sorting selesai! Lihat hasil di bawah.', 'success');
+            url: '/admin/sortingpc/save',
 
-    //     // Scroll ke hasil
-    //     $('html, body').animate({
-    //         scrollTop: $('#sorting-result').offset().top - 80
-    //     }, 500);
-    // });
+            type: 'POST',
+
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+
+            data: {
+                session_id: sortingSessionId,
+                result: sortingResult
+            },
+
+            success: function () {
+
+                GKP.showToast('Hasil sorting berhasil disimpan!', 'success');
+
+                $('#btn-save-sorting').addClass('hidden');
+
+            },
+            error: function (xhr) {
+
+                GKP.showToast(xhr.responseJSON.message, 'error');
+
+            }
+
+        });
+
+    });
 
 });
