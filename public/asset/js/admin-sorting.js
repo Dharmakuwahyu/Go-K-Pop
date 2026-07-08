@@ -85,6 +85,11 @@ $(function () {
                 sortingSessionId = response.session_id;
                 sortingResult = response.result;
 
+                // tambahkan keterangan (Processing)
+                const $option = $('#album-select option:selected');
+                const title = $option.data('title');
+                $option.text(title + ' (Processing)');
+
                 const $tbody = $('#sorting-result-tbody').empty();
 
                 response.result.forEach(function (r) {
@@ -156,7 +161,31 @@ $(function () {
 
                 GKP.showToast('Hasil sorting berhasil disimpan!', 'success');
 
+                // Simpan album yang dipilih
+                const albumId = $('#album-select').val();
+
+                // Hapus option album yang sudah selesai
+                $('#album-select option[value="' + albumId + '"]').remove();
+
+                // Kembali ke placeholder
+                $('#album-select').prop('selectedIndex', 0);
+
+                // Kosongkan input member
+                $('#member-inputs').empty();
+
+                // Kosongkan tabel hasil
+                $('#sorting-result-tbody').empty();
+
+                // Sembunyikan hasil sorting
+                $('#sorting-result').addClass('hidden');
+
+                // Sembunyikan tombol save
                 $('#btn-save-sorting').addClass('hidden');
+
+                // Reset state javascript
+                sortingSessionId = null;
+                sortingResult = [];
+                selectedOrders = [];
 
             },
             error: function (xhr) {

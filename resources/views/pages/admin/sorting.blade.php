@@ -19,8 +19,13 @@
             </option>
 
             @foreach ($albums as $album)
-                <option value="{{ $album->id }}">
+                <option value="{{ $album->id }}"  
+                    data-title="{{ $album->group_name }} - {{ $album->title }}">
+                    
                     {{ $album->group_name }} - {{ $album->title }}
+                    @if ($album->is_processing)
+                        (Processing)
+                    @endif
                 </option>
             @endforeach
 

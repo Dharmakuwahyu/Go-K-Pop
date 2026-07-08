@@ -13,13 +13,26 @@ class SortingController extends Controller
 {
     public function adminSortingPc()
     {
+        $processingAlbumIds = SortingSession::where('status', 'processing')
+            ->pluck('album_id')
+            ->toArray();
+
+        $closedAlbumIds = SortingSession::where('status', 'closed')
+            ->pluck('album_id');
+
         $albums = Order::with('album')
             ->where('status', 'dp1_confirmed')
             ->whereHas('dp1Payment')
+            ->whereNotIn('album_id', $closedAlbumIds)
             ->get()
             ->pluck('album')
             ->unique('id')
             ->values();
+
+        $albums->each(function ($album) use ($processingAlbumIds) {
+            $album->is_processing = in_array($album->id, $processingAlbumIds);
+        });
+        
         return view('pages.admin.sorting', compact('albums'));
     }
 
