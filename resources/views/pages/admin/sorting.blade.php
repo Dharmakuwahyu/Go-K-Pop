@@ -19,9 +19,8 @@
             </option>
 
             @foreach ($albums as $album)
-                <option value="{{ $album->id }}"  
-                    data-title="{{ $album->group_name }} - {{ $album->title }}">
-                    
+                <option value="{{ $album->id }}" data-title="{{ $album->group_name }} - {{ $album->title }}">
+
                     {{ $album->group_name }} - {{ $album->title }}
                     @if ($album->is_processing)
                         (Processing)
@@ -101,6 +100,63 @@
             <button class="btn btn-neon hidden" id="btn-save-sorting">
                 Simpan Hasil Sorting
             </button>
+        </div>
+    </div>
+
+    {{-- ========================================================= --}}
+    {{-- Riwayat Sorting --}}
+    {{-- Menampilkan semua sesi sorting yang sudah selesai --}}
+    {{-- ========================================================= --}}
+    <div class="admin-card" style="margin-top:24px">
+        <h2 class="admin-panel-title">
+            Riwayat Sorting
+        </h2>
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Album</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($sortingSessions as $session)
+                        <tr>
+                            {{-- Tanggal sorting --}}
+                            <td>
+                                {{ $session->created_at->format('d M Y H:i') }}
+                            </td>
+                            {{-- Nama album --}}
+                            <td>
+                                {{ $session->album->group_name }}
+                                -
+                                {{ $session->album->title }}
+                            </td>
+                            {{-- Status session --}}
+                            <td>
+                                <span class="status-badge status-success">
+                                    Closed
+                                </span>
+                            </td>
+
+                            {{-- Tombol lihat hasil --}}
+                            <td>
+                                <button class="btn btn-neon btn-view-sorting" data-session="{{ $session->id }}">
+                                    Lihat
+                                </button>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" style="text-align:center">
+                                Belum ada riwayat sorting.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 @endsection

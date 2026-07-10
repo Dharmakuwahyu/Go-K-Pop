@@ -32,8 +32,15 @@ class SortingController extends Controller
         $albums->each(function ($album) use ($processingAlbumIds) {
             $album->is_processing = in_array($album->id, $processingAlbumIds);
         });
-        
-        return view('pages.admin.sorting', compact('albums'));
+
+        // Ambil semua sesi sorting yang sudah selesai (closed)
+        // Nantinya akan ditampilkan pada tabel Riwayat Sorting
+        $sortingSessions = SortingSession::with('album')
+            ->where('status', 'closed')
+            ->latest('created_at')
+            ->get();
+
+        return view('pages.admin.sorting', compact('albums', 'sortingSessions'));
     }
 
     public function getAlbumData(Album $album)
