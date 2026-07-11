@@ -34,6 +34,19 @@ class Order extends Model
         'created_at'      => 'datetime',
     ];
 
+    /**
+     * Accessor yang otomatis ikut dikirim saat model diubah menjadi JSON.
+     */
+    protected $appends = [
+        'status_label',
+        'status_color',
+        'total_price',
+        'paid_amount',
+        'remaining_price',
+        'current_payment_amount',
+        'formatted_created_at',
+    ];
+
     // ============================================================
     // RELASI
     // ============================================================

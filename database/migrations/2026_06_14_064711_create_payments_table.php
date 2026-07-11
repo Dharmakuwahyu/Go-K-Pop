@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('proof_image_url', 500)->nullable()->comment('Link foto bukti transfer');
             $table->enum('status', ['pending', 'verified', 'rejected'])->default('pending');
             $table->string('reject_reason', 255)->nullable()->comment('Alasan ditolak');
-            // $table->char('verified_by', 36)->nullable()->comment('Admin yang memverifikasi');
             $table->foreignId('verified_by')
                 ->nullable()
                 ->comment('Admin yang memverifikasi')

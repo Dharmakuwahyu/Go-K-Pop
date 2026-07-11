@@ -15,11 +15,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_code', 20)->unique()->comment('Kode readable, contoh: ORD-001');
-            // $table->char('user_id', 36)->comment('Pembeli');
-            // $table->char('album_id', 36);
-            // $table->char('variant_id', 36);
             $table->foreignId('user_id')
-            // sementara dibuat null karena belum ada data di tabel profiles
                 ->comment('Pembeli')
                 ->constrained('profiles')
                 ->restrictOnDelete();

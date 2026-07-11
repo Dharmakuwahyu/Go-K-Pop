@@ -20,7 +20,7 @@
                     </svg>
                 </div>
             </div>
-            <div style="font-size:2rem;font-weight:800;color:#fff" id="stat-total">7</div>
+            <div style="font-size:2rem;font-weight:800;color:#fff" id="stat-total">{{ $totalOrders }}</div>
         </div>
         <div class="admin-card" style="padding:1.25rem;margin-bottom:0">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
@@ -34,7 +34,7 @@
                     </svg>
                 </div>
             </div>
-            <div style="font-size:2rem;font-weight:800;color:#fff" id="stat-pending">5</div>
+            <div style="font-size:2rem;font-weight:800;color:#fff" id="stat-pending">{{ $pendingOrders }}</div>
         </div>
         <div class="admin-card" style="padding:1.25rem;margin-bottom:0">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
@@ -47,7 +47,7 @@
                     </svg>
                 </div>
             </div>
-            <div style="font-size:2rem;font-weight:800;color:#fff" id="stat-lunas">1</div>
+            <div style="font-size:2rem;font-weight:800;color:#fff" id="stat-lunas">{{ $paidOrders }}</div>
         </div>
     </div>
 
@@ -65,11 +65,11 @@
             <div class="select-wrap">
                 <select class="filter-select" id="filter-album" style="min-width:160px">
                     <option value="all">Semua Album</option>
-                    <option value="NCT 127 - ISTJ">NCT 127 - ISTJ</option>
-                    <option value="SEVENTEEN - FML">SEVENTEEN - FML</option>
-                    <option value="aespa - MY WORLD">aespa - MY WORLD</option>
-                    <option value="Stray Kids - 5-STAR">Stray Kids - 5-STAR</option>
-                    <option value="NewJeans - Get Up">NewJeans - Get Up</option>
+                    @foreach ($albums as $album)
+                        <option value="{{ $album->group_name }} - {{ $album->title }}">
+                            {{ $album->group_name }} - {{ $album->title }}
+                        </option>
+                    @endforeach
                 </select>
                 <svg class="select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <polyline points="6 9 12 15 18 9" />
@@ -78,13 +78,11 @@
             <div class="select-wrap">
                 <select class="filter-select" id="filter-status" style="min-width:160px">
                     <option value="all">Semua Status</option>
-                    <option value="pending_dp1">Menunggu DP 1</option>
-                    <option value="dp1_confirmed">DP 1 Lunas</option>
-                    <option value="pending_dp2">Menunggu DP 2</option>
-                    <option value="dp2_confirmed">DP 2 Lunas</option>
-                    <option value="pending_pelunasan">Menunggu Pelunasan</option>
-                    <option value="pelunasan_confirmed">Lunas</option>
-                    <option value="shipped">Siap Kirim / Dikirim</option>
+                    @foreach ($statuses as $status)
+                        <option value="{{ $status['value'] }}">
+                            {{ $status['label'] }}
+                        </option>
+                    @endforeach
                 </select>
                 <svg class="select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <polyline points="6 9 12 15 18 9" />
@@ -111,7 +109,82 @@
                     </tr>
                 </thead>
                 <tbody id="orders-tbody">
-                    <tr data-album="NCT 127 - ISTJ" data-status="pending_dp1" data-buyer="rina aulia" data-id="ord-001">
+                    @forelse ($orders as $order)
+                        <tr data-album="{{ $order->album->group_name }} - {{ $order->album->title }}"
+                            data-status="{{ $order->status }}" data-buyer="{{ strtolower($order->buyer_name) }}"
+                            data-id="{{ strtolower($order->order_code) }}">
+
+                            {{-- ID Pesanan --}}
+                            <td class="mono">
+                                {{ $order->order_code }}
+                            </td>
+
+                            {{-- Pembeli --}}
+                            <td>
+                                <div class="td-buyer-name">
+                                    {{ $order->buyer_name }}
+                                </div>
+                                <div class="td-buyer-city">
+                                    {{ $order->buyer_city }}
+                                </div>
+                            </td>
+
+                            {{-- Album / Varian --}}
+                            <td>
+                                <div class="td-album">
+                                    {{ $order->album->group_name }} - {{ $order->album->title }}
+                                </div>
+
+                                <div class="td-album-sub">
+                                    {{ $order->variant->name }} × {{ $order->qty }}
+                                </div>
+                            </td>
+
+                            {{-- Prioritas --}}
+                            <td>
+                                <div class="td-prio">
+                                    @foreach ($order->priorities->sortBy('priority') as $priority)
+                                        <span>{{ $priority->priority }}. {{ $priority->member_name }}</span>
+                                    @endforeach
+                                </div>
+                            </td>
+
+                            {{-- Total Estimasi --}}
+                            <td class="text-right" style="color:#fff">
+                                Rp{{ number_format($order->total_price, 0, ',', '.') }}
+                            </td>
+
+                            {{-- Sudah Dibayar --}}
+                            <td class="text-right td-paid">
+                                Rp{{ number_format($order->paid_amount, 0, ',', '.') }}
+                            </td>
+
+                            {{-- Kekurangan Tahap Ini --}}
+                            <td class="text-right td-due">
+                                Rp{{ number_format($order->current_payment_amount, 0, ',', '.') }}
+                            </td>
+
+                            {{-- Sisa Harga --}}
+                            <td class="text-right td-remaining">
+                                Rp{{ number_format($order->remaining_price, 0, ',', '.') }}
+                            </td>
+
+                            {{-- Status --}}
+                            <td>
+                                <span class="badge badge-{{ $order->status_color }}">
+                                    {{ $order->status_label }}
+                                </span>
+                            </td>
+
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="9" style="text-align:center;padding:2rem">
+                                Belum ada data pesanan.
+                            </td>
+                        </tr>
+                    @endforelse
+                    {{-- <tr data-album="NCT 127 - ISTJ" data-status="pending_dp1" data-buyer="rina aulia" data-id="ord-001">
                         <td class="mono">ORD-001</td>
                         <td>
                             <div class="td-buyer-name">Rina Aulia</div>
@@ -248,7 +321,7 @@
                         <td class="text-right" style="color:var(--neon-400)">Rp0</td>
                         <td class="text-right" style="color:var(--neon-400)">Rp0</td>
                         <td><span class="badge badge-green">Siap Kirim / Dikirim</span></td>
-                    </tr>
+                    </tr> --}}
                 </tbody>
             </table>
         </div>
