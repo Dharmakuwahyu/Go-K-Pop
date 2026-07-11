@@ -78,6 +78,23 @@ class AdminOrderController extends Controller
             ->get();
 
         // Kembalikan data dalam bentuk JSON
-        return response()->json($orders);
+        return response()->json([
+            'orders'     => $orders,
+
+            'statistics' => [
+                'total_orders'   => $orders->count(),
+
+                'pending_orders' => $orders->whereIn('status', [
+                    'pending_dp1',
+                    'pending_dp2',
+                    'pending_pelunasan',
+                ])->count(),
+
+                'paid_orders'    => $orders->whereIn('status', [
+                    'pelunasan_confirmed',
+                    'shipped',
+                ])->count(),
+            ],
+        ]);
     }
 }

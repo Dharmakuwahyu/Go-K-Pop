@@ -38,8 +38,11 @@ $(function () {
             // Format data yang diterima
             dataType: 'json',
             success: function (response) {
-                // Simpan data dari server
-                orders = response;
+                // Simpan data pesanan
+                orders = response.orders;
+
+                // Perbarui kartu statistik
+                updateStatistics(response.statistics);
 
                 // Tampilkan ulang tabel sesuai filter yang sedang aktif
                 filterOrders();
@@ -165,6 +168,20 @@ $(function () {
                 </tr>
             `);
         });
+    }
+
+
+    /**
+     * Memperbarui kartu statistik tanpa me-refresh halaman.
+     */
+    function updateStatistics(statistics) {
+
+        $('#stat-total').text(statistics.total_orders);
+
+        $('#stat-pending').text(statistics.pending_orders);
+
+        $('#stat-lunas').text(statistics.paid_orders);
+
     }
 
 
