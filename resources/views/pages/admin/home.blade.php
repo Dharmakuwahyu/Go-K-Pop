@@ -27,11 +27,11 @@
                         <polyline points="17 6 23 6 23 12" />
                     </svg></div>
             </div>
-            <div class="admin-stat-value">Rp700.000</div>
+            <div class="admin-stat-value">Rp{{ number_format($totalRevenue, 0, ',', '.') }}</div>
         </div>
         <div class="admin-stat stat-emerald">
             <div class="admin-stat-header">
-                <span class="admin-stat-label">Pengguna Aktif</span>
+                <span class="admin-stat-label">Total Pengguna</span>
                 <div class="admin-stat-icon"><svg width="20" height="20" fill="none" stroke="currentColor"
                         stroke-width="2" viewBox="0 0 24 24">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -40,7 +40,7 @@
                         <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg></div>
             </div>
-            <div class="admin-stat-value">5</div>
+            <div class="admin-stat-value">{{ $totalUsers }}</div>
         </div>
         <div class="admin-stat stat-gold">
             <div class="admin-stat-header">
@@ -51,7 +51,7 @@
                         <polyline points="12 6 12 12 16 14" />
                     </svg></div>
             </div>
-            <div class="admin-stat-value">61%</div>
+            <div class="admin-stat-value">{{ $quotaPercentage }}%</div>
         </div>
         <div class="admin-stat stat-sky">
             <div class="admin-stat-header">
@@ -62,7 +62,7 @@
                             d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                     </svg></div>
             </div>
-            <div class="admin-stat-value">7</div>
+            <div class="admin-stat-value">{{ $totalOrders }}</div>
         </div>
     </div>
 
@@ -81,118 +81,54 @@
             </h3>
             <div
                 style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.2);font-size:.75rem;color:var(--gold-400)">
-                🔥 Trending: Stray Kids
+                🔥 Trending: {{ $trendingAlbum?->group_name ?? 'Belum ada album trending' }}
             </div>
         </div>
         <div class="campaign-grid">
-            <!-- Stray Kids -->
-            <div class="campaign-card">
-                <div class="campaign-card-top">
-                    <img class="campaign-card-img"
-                        src="https://images.pexels.com/photos/1644697/pexels-photo-1644697.jpeg?auto=compress&cs=tinysrgb&w=200"
-                        alt="5-STAR">
-                    <div>
-                        <p class="campaign-group">Stray Kids</p>
-                        <p class="campaign-title">5-STAR - 3rd Album</p>
-                        <p class="campaign-orders">1 pesanan masuk</p>
+            @foreach ($albums as $album)
+                <div class="campaign-card">
+                    <div class="campaign-card-top">
+
+                        {{-- Cover album --}}
+                        <img class="campaign-card-img" src="{{ $album->image_url }}" alt="{{ $album->title }}">
+
+                        <div>
+
+                            {{-- Nama grup --}}
+                            <p class="campaign-group">
+                                {{ $album->group_name }}
+                            </p>
+
+                            {{-- Judul album --}}
+                            <p class="campaign-title">
+                                {{ $album->title }}
+                            </p>
+
+                            {{-- Jumlah pesanan --}}
+                            <p class="campaign-orders">
+                                {{ $album->orders_count }} pesanan masuk
+                            </p>
+
+                        </div>
+                    </div>
+
+                    {{-- Progress kuota --}}
+                    <div class="progress-label">
+                        <span>Sisa Kuota</span>
+                        <span>{{ $album->slots_left }} / {{ $album->total_slots }}</span>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ $album->progress }}%; background: {{ $album->progressColor }};">
+                        </div>
+                    </div>
+
+                    <div class="progress-footer">
+                        <span>{{ $album->progress }}% tercapai</span>
+                        <span>Rp{{ number_format($album->price, 0, ',', '.') }}</span>
                     </div>
                 </div>
-                <div class="progress-label"><span>Kuota Terisi</span><span>32 / 35</span></div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:91%;background:#e11d48"></div>
-                </div>
-                <div class="progress-footer"><span>91% tercapai</span><span>Rp295.000</span></div>
-            </div>
-            <!-- SEVENTEEN -->
-            <div class="campaign-card">
-                <div class="campaign-card-top">
-                    <img class="campaign-card-img"
-                        src="https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=200"
-                        alt="FML">
-                    <div>
-                        <p class="campaign-group">SEVENTEEN</p>
-                        <p class="campaign-title">FML - 10th Mini Album</p>
-                        <p class="campaign-orders">1 pesanan masuk</p>
-                    </div>
-                </div>
-                <div class="progress-label"><span>Kuota Terisi</span><span>42 / 50</span></div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:84%;background:#eab308"></div>
-                </div>
-                <div class="progress-footer"><span>84% tercapai</span><span>Rp310.000</span></div>
-            </div>
-            <!-- ENHYPEN -->
-            <div class="campaign-card">
-                <div class="campaign-card-top">
-                    <img class="campaign-card-img"
-                        src="https://images.pexels.com/photos/1540137/pexels-photo-1540137.jpeg?auto=compress&cs=tinysrgb&w=200"
-                        alt="DARK BLOOD">
-                    <div>
-                        <p class="campaign-group">ENHYPEN</p>
-                        <p class="campaign-title">DARK BLOOD - 4th Mini...</p>
-                        <p class="campaign-orders">0 pesanan masuk</p>
-                    </div>
-                </div>
-                <div class="progress-label"><span>Kuota Terisi</span><span>18 / 30</span></div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:60%;background:#e11d48"></div>
-                </div>
-                <div class="progress-footer"><span>60% tercapai</span><span>Rp270.000</span></div>
-            </div>
-            <!-- NCT 127 -->
-            <div class="campaign-card">
-                <div class="campaign-card-top">
-                    <img class="campaign-card-img"
-                        src="https://images.pexels.com/photos/1762537/pexels-photo-1762537.jpeg?auto=compress&cs=tinysrgb&w=200"
-                        alt="ISTJ">
-                    <div>
-                        <p class="campaign-group">NCT 127</p>
-                        <p class="campaign-title">ISTJ - The 5th Album</p>
-                        <p class="campaign-orders">3 pesanan masuk</p>
-                    </div>
-                </div>
-                <div class="progress-label"><span>Kuota Terisi</span><span>15 / 30</span></div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:50%;background:#eab308"></div>
-                </div>
-                <div class="progress-footer"><span>50% tercapai</span><span>Rp285.000</span></div>
-            </div>
-            <!-- aespa -->
-            <div class="campaign-card">
-                <div class="campaign-card-top">
-                    <img class="campaign-card-img"
-                        src="https://images.pexels.com/photos/1540137/pexels-photo-1540137.jpeg?auto=compress&cs=tinysrgb&w=200"
-                        alt="MY WORLD">
-                    <div>
-                        <p class="campaign-group">aespa</p>
-                        <p class="campaign-title">MY WORLD - 3rd Mini...</p>
-                        <p class="campaign-orders">1 pesanan masuk</p>
-                    </div>
-                </div>
-                <div class="progress-label"><span>Kuota Terisi</span><span>18 / 40</span></div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:45%;background:#22c55e"></div>
-                </div>
-                <div class="progress-footer"><span>45% tercapai</span><span>Rp250.000</span></div>
-            </div>
-            <!-- NewJeans -->
-            <div class="campaign-card">
-                <div class="campaign-card-top">
-                    <img class="campaign-card-img"
-                        src="https://images.pexels.com/photos/1670934/pexels-photo-1670934.jpeg?auto=compress&cs=tinysrgb&w=200"
-                        alt="Get Up">
-                    <div>
-                        <p class="campaign-group">NewJeans</p>
-                        <p class="campaign-title">Get Up - 2nd EP</p>
-                        <p class="campaign-orders">1 pesanan masuk</p>
-                    </div>
-                </div>
-                <div class="progress-label"><span>Kuota Terisi</span><span>15 / 45</span></div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:33%;background:#22c55e"></div>
-                </div>
-                <div class="progress-footer"><span>33% tercapai</span><span>Rp240.000</span></div>
-            </div>
+            @endforeach
         </div>
     </div>
 @endsection
