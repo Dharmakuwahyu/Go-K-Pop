@@ -37,6 +37,7 @@ Route::middleware('member')->group(function () {
 Route::middleware('admin')->group(function () {
 // admin
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'adminDashboard'])->name('admin.dashboard');
+    
     Route::get('/admin/campaign', [CampaignController::class, 'adminCampaign'])->name('admin.campaign');
     Route::post('/admin/campaign', [CampaignController::class, 'store'])->name('admin.store');
     Route::put('/admin/campaign/{album}', [CampaignController::class, 'update'])->name('admin.update');
