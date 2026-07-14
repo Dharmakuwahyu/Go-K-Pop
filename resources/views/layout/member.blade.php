@@ -30,7 +30,8 @@
                 <span class="nav-logo-text">GO <span>K-POP</span></span>
             </a>
             <div class="nav-links">
-                <a href="../../index.html" class="nav-link">Beranda</a>
+                <a href="{{ route('member.beranda') }}" 
+                    class="nav-link {{ request()->routeIs('member.beranda') ? 'active' : '' }}">Beranda</a>
                 <a href="{{ route('member.catalog') }}"
                     class="nav-link {{ request()->routeIs('member.catalog') ? 'active' : '' }}">Katalog</a>
                 <a href="{{ route('member.pesanan') }}"
@@ -72,7 +73,8 @@
             </button>
         </div>
         <div class="mobile-nav" id="mobile-nav">
-            <a href="../../index.html" class="nav-link">Beranda</a>
+            <a href="{{ route('member.beranda') }}" 
+                class="nav-link {{ request()->routeIs('member.beranda') ? 'active' : '' }}">Beranda</a>
             <a href="{{ route('member.catalog') }}"
                 class="nav-link {{ request()->routeIs('member.catalog') ? 'active' : '' }}">Katalog</a>
             <a href="{{ route('member.pesanan') }}"

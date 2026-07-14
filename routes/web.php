@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminPaymentController;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
@@ -24,6 +25,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('member')->group(function () {
 // member
+    Route::get('/member/beranda', [BerandaController::class, 'memberBeranda'])->name('member.beranda');
     Route::get('/member/catalog', [AlbumController::class, 'memberCatalog'])->name('member.catalog');
     Route::get('/member/catalog/form/{album}', [AlbumController::class, 'showFormPembelian'])->name('member.form.pembelian');
     Route::post('/member/wishlist/toggle', [WishlistController::class, 'toggle'])->name('member.wishlist.toggle');
