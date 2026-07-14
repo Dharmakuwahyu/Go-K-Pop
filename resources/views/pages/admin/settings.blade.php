@@ -2,6 +2,8 @@
 
 @section('title', 'Pengaturan — GO K-POP Admin')
 
+@section('breadcrumb', 'Pengaturan')
+
 @section('admin_content')
     <!-- Admin Profile Header -->
     <div class="admin-profile-header">

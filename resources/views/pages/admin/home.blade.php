@@ -2,6 +2,8 @@
 
 @section('title', 'Beranda Admin — GO K-POP')
 
+@section('breadcrumb', 'Beranda')
+
 @section('admin_content')
     <!-- Hero banner -->
     <div class="admin-hero-banner">

@@ -2,6 +2,8 @@
 
 @section('title', 'Pengiriman — GO K-POP Admin')
 
+@section('breadcrumb', 'Pengiriman')
+
 @section('admin_content')
     <h1 class="admin-panel-title">Pengiriman &amp; Resi</h1>
     <p class="admin-panel-sub">Update status kargo dan input nomor resi domestik</p>

@@ -2,6 +2,8 @@
 
 @section('title', 'Pembayaran — GO K-POP Admin')
 
+@section('breadcrumb', 'Pembayaran')
+
 @section('admin_content')
     <h1 class="admin-panel-title">Verifikasi Pembayaran</h1>
     <p class="admin-panel-sub">Periksa bukti transfer dari pembeli</p>

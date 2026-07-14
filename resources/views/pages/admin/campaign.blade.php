@@ -2,6 +2,8 @@
 
 @section('title', 'Campaign — GO K-POP Admin')
 
+@section('breadcrumb', 'Campaign')
+
 @section('admin_content')
     <!-- Page Header -->
     <div style="margin-bottom:2rem;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1rem">

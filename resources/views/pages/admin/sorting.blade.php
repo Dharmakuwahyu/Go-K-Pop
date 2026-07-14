@@ -2,6 +2,8 @@
 
 @section('title', 'Sorting PC — GO K-POP Admin')
 
+@section('breadcrumb', 'Sorting PC')
+
 @section('admin_content')
     <h1 class="admin-panel-title">Sorting Photocard Otomatis</h1>
     <p class="admin-panel-sub">Masukkan jumlah kartu fisik per member, lalu jalankan sorting</p>

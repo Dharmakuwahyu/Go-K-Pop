@@ -2,6 +2,8 @@
 
 @section('title', 'Data Pesanan — GO K-POP Admin')
 
+@section('breadcrumb', 'Pesanan')
+
 @section('admin_content')
     <h1 class="admin-panel-title">Data Pesanan</h1>
     <p class="admin-panel-sub">Pusat kontrol seluruh database pesanan masuk</p>
