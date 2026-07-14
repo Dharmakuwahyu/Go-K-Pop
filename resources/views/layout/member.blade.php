@@ -31,10 +31,14 @@
             </a>
             <div class="nav-links">
                 <a href="../../index.html" class="nav-link">Beranda</a>
-                <a href="{{ route('member.catalog') }}" class="nav-link {{ request()->routeIs('member.catalog') ? 'active' : '' }}">Katalog</a>
-                <a href="{{ route('member.pesanan') }}" class="nav-link {{ request()->routeIs('member.pesanan') ? 'active' : '' }}">Pesanan Saya</a>
-                <a href="{{ route('member.wishlist') }}" class="nav-link {{ request()->routeIs('member.wishlist') ? 'active' : '' }}">Album Favorit</a>
-                <a href="{{ route('member.profile') }}" class="nav-link {{ request()->routeIs('member.profile') ? 'active' : '' }}">Akun Saya</a>
+                <a href="{{ route('member.catalog') }}"
+                    class="nav-link {{ request()->routeIs('member.catalog') ? 'active' : '' }}">Katalog</a>
+                <a href="{{ route('member.pesanan') }}"
+                    class="nav-link {{ request()->routeIs('member.pesanan') ? 'active' : '' }}">Pesanan Saya</a>
+                <a href="{{ route('member.wishlist') }}"
+                    class="nav-link {{ request()->routeIs('member.wishlist') ? 'active' : '' }}">Album Favorit</a>
+                <a href="{{ route('member.profile') }}"
+                    class="nav-link {{ request()->routeIs('member.profile') ? 'active' : '' }}">Akun Saya</a>
             </div>
             <div class="nav-actions">
                 <div class="nav-role-badge member-badge">
@@ -69,11 +73,21 @@
         </div>
         <div class="mobile-nav" id="mobile-nav">
             <a href="../../index.html" class="nav-link">Beranda</a>
-            <a href="catalog.html" class="nav-link">Katalog</a>
-            <a href="dashboard.html" class="nav-link">Pesanan Saya</a>
-            <a href="wishlist.html" class="nav-link">Album Favorit</a>
-            <a href="profile.html" class="nav-link active">Akun Saya</a>
-            <a href="../../index.html" class="nav-link" style="color:var(--accent-400)">Keluar</a>
+            <a href="{{ route('member.catalog') }}"
+                class="nav-link {{ request()->routeIs('member.catalog') ? 'active' : '' }}">Katalog</a>
+            <a href="{{ route('member.pesanan') }}"
+                class="nav-link {{ request()->routeIs('member.pesanan') ? 'active' : '' }}">Pesanan Saya</a>
+            <a href="{{ route('member.wishlist') }}"
+                class="nav-link {{ request()->routeIs('member.wishlist') ? 'active' : '' }}">Album Favorit</a>
+            <a href="{{ route('member.profile') }}"
+                class="nav-link {{ request()->routeIs('member.profile') ? 'active' : '' }}">Akun Saya</a>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="nav-link"
+                    style="color:var(--accent-400);width:100%;text-align:left;background:none;border:none;cursor:pointer;">
+                    Keluar
+                </button>
+            </form>
         </div>
     </nav>
 

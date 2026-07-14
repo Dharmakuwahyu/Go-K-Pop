@@ -44,8 +44,9 @@
         <div class="mobile-nav" id="mobile-nav">
             <a href="index.html" class="nav-link active">Beranda</a>
             <a href="#about" class="nav-link">Tentang Kami</a>
-            <button class="nav-link" id="mobile-btn-auth" style="text-align:left;color:var(--accent-400)">Masuk /
-                Daftar</button>
+            <button class="nav-link" id="mobile-btn-auth" style="text-align:left;color:var(--accent-400)">
+                Masuk / Daftar
+            </button>
         </div>
     </nav>
 
