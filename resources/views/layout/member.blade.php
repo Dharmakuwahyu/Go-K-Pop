@@ -31,10 +31,10 @@
             </a>
             <div class="nav-links">
                 <a href="../../index.html" class="nav-link">Beranda</a>
-                <a href="{{ route('member.catalog') }}" class="nav-link">Katalog</a>
-                <a href="{{ route('member.pesanan') }}" class="nav-link">Pesanan Saya</a>
-                <a href="{{ route('member.wishlist') }}" class="nav-link">Album Favorit</a>
-                <a href="{{ route('member.profile') }}" class="nav-link active">Akun Saya</a>
+                <a href="{{ route('member.catalog') }}" class="nav-link {{ request()->routeIs('member.catalog') ? 'active' : '' }}">Katalog</a>
+                <a href="{{ route('member.pesanan') }}" class="nav-link {{ request()->routeIs('member.pesanan') ? 'active' : '' }}">Pesanan Saya</a>
+                <a href="{{ route('member.wishlist') }}" class="nav-link {{ request()->routeIs('member.wishlist') ? 'active' : '' }}">Album Favorit</a>
+                <a href="{{ route('member.profile') }}" class="nav-link {{ request()->routeIs('member.profile') ? 'active' : '' }}">Akun Saya</a>
             </div>
             <div class="nav-actions">
                 <div class="nav-role-badge member-badge">
@@ -45,15 +45,6 @@
                     </svg>
                     Member
                 </div>
-                {{-- <a href="" class="btn-nav-logout">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                        <polyline points="16 17 21 12 16 7" />
-                        <line x1="21" y1="12" x2="9" y2="12" />
-                    </svg>
-                    Keluar
-                </a> --}}
                 <form action="{{ route('logout') }}" method="POST" style="display:inline">
                     @csrf
                     <button type="submit" class="btn-nav-logout">
