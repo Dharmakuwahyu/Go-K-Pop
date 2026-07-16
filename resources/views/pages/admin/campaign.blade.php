@@ -72,10 +72,10 @@
                         <span style="color:#fff;font-weight:600">Rp{{ number_format($album->price) }}</span>
                         <span
                             style="font-size:.75rem;color:var(--slate-500)">{{ $album->slots_left }}/{{ $album->total_slots }}
-                            slot</span>
+                            Kuota</span>
                     </div>
                     <div class="progress-bar" style="margin-bottom:1rem">
-                        <div class="progress-fill" style="width:50%;background:#eab308"></div>
+                        <div class="progress-fill" style="width:{{ $album->progress }}%; background: {{ $album->progressColor }};"></div>
                     </div>
                     <div style="display:flex;gap:8px">
                         <button class="btn-camp-edit" data-id="{{ $album->id }}" data-group="{{ $album->group_name }}"
