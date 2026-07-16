@@ -38,7 +38,7 @@
                         </div>
                         <div class="album-price-row">
                             <span class="album-price">Rp{{ number_format($album->price) }}</span>
-                            <span class="album-slots-txt">{{ $album->slots_left }}/{{ $album->total_slots }} slot</span>
+                            <span class="album-slots-txt">{{ $album->slots_left }}/{{ $album->total_slots }} Kuota</span>
                         </div>
                         <div class="slot-bar">
                             <div class="slot-fill"

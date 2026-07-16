@@ -51,10 +51,10 @@
                         </div>
                         <div class="album-price-row">
                             <span class="album-price">Rp{{ number_format($album->price) }}</span>
-                            <span class="album-slots-txt">{{ $album->slots_left }}/{{ $album->total_slots }} slot</span>
+                            <span class="album-slots-txt">{{ $album->slots_left }}/{{ $album->total_slots }} Kuota</span>
                         </div>
                         <div class="slot-bar">
-                            <div class="slot-fill" style="width:50%;background:#eab308"></div>
+                            <div class="slot-fill" style="width:{{ $album->progress }}%; background: {{ $album->progressColor }};"></div>
                         </div>
                         <button class="btn-book js-book-album" data-album-id="{{ $album->id }}">Book Slot</button>
                     </div>
