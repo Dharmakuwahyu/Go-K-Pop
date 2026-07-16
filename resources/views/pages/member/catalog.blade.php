@@ -17,9 +17,9 @@
                 @endphp
                 <div class="album-card">
                     <div class="album-img-wrap">
-                        <button class="like-btn {{ $isLiked ? 'liked' : '' }}"
-                            data-album-id="{{ $album->id }}"><svg viewBox="0 0 24 24" fill="{{ $isLiked ? '#f472b6' : 'transparent' }}" stroke="{{ $isLiked ? '#f472b6' : '#cbd5e1' }}"
-                                stroke-width="2">
+                        <button class="like-btn {{ $isLiked ? 'liked' : '' }}" data-album-id="{{ $album->id }}"><svg
+                                viewBox="0 0 24 24" fill="{{ $isLiked ? '#f472b6' : 'transparent' }}"
+                                stroke="{{ $isLiked ? '#f472b6' : '#cbd5e1' }}" stroke-width="2">
                                 <path
                                     d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                             </svg></button>
@@ -41,7 +41,8 @@
                             <span class="album-slots-txt">{{ $album->slots_left }}/{{ $album->total_slots }} slot</span>
                         </div>
                         <div class="slot-bar">
-                            <div class="slot-fill" style="width:50%;background:#eab308"></div>
+                            <div class="slot-fill"
+                                style="width:{{ $album->progress }}%; background: {{ $album->progressColor }}"></div>
                         </div>
                         <button class="btn-book js-book-album" data-album-id="{{ $album->id }}">Book Slot</button>
                     </div>
@@ -52,7 +53,7 @@
                     <p>Belum ada album yang tersedia saat ini.</p>
                 </div>
             @endforelse
-            <!-- NCT 127 -->
+            {{-- <!-- NCT 127 -->
             <div class="album-card">
                 <div class="album-img-wrap">
                     <button class="like-btn" data-album-id="1"><svg viewBox="0 0 24 24" fill="transparent" stroke="#cbd5e1"
@@ -236,7 +237,7 @@
                     </div>
                     <button class="btn-book js-book-album" data-album-id="6">Book Slot</button>
                 </div>
-            </div>
+            </div> --}}
 
         </div>
     </div>
