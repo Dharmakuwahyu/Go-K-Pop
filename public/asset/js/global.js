@@ -382,7 +382,7 @@ GKP.orderModal = {
                     GKP.showToast('Pesanan berhasil dibuat!', 'success');
 
                     setTimeout(() => {
-                        window.location.href = '/member/catalog';
+                        window.location.href = '/member/pesanan';
                     }, 1000);
                 },
 
