@@ -26,14 +26,19 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('member')->group(function () {
 // member
     Route::get('/member/beranda', [BerandaController::class, 'memberBeranda'])->name('member.beranda');
+
     Route::get('/member/catalog', [AlbumController::class, 'memberCatalog'])->name('member.catalog');
     Route::get('/member/catalog/form/{album}', [AlbumController::class, 'showFormPembelian'])->name('member.form.pembelian');
+
     Route::post('/member/wishlist/toggle', [WishlistController::class, 'toggle'])->name('member.wishlist.toggle');
+    Route::get('/member/wishlist', [WishlistController::class, 'memberWishlist'])->name('member.wishlist');
+
     Route::post('/member/orders', [OrderController::class, 'store'])->name('member.orders.store');
     Route::get('/member/pesanan', [DashboardController::class, 'memberDashboard'])->name('member.pesanan');
     Route::post('/member/payments/upload', [PaymentController::class, 'upload'])->name('member.payment.upload');
-    Route::get('/member/wishlist', [WishlistController::class, 'memberWishlist'])->name('member.wishlist');
+
     Route::get('/member/profile', [ProfileController::class, 'memberProfile'])->name('member.profile');
+    Route::put('/member/profile', [ProfileController::class, 'updateProfile'])->name('member.profile.update');
 });
 
 Route::middleware('admin')->group(function () {

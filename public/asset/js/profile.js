@@ -5,14 +5,26 @@
 $(function () {
 
     /* ── Simpan perubahan data diri ───────────────────────── */
-    $('#btn-save-profile').on('click', function () {
-        const name = $('#input-name').val().trim();
-        if (!name) { GKP.showToast('Nama tidak boleh kosong.', 'error'); return; }
-        $('#profile-display-name').text(name);
+    // $('#btn-save-profile').on('click', function () {
+    //     const name = $('#input-name').val().trim();
+    //     if (!name) { GKP.showToast('Nama tidak boleh kosong.', 'error'); return; }
+    //     $('#profile-display-name').text(name);
+    //     $('#save-success').addClass('show');
+    //     setTimeout(() => $('#save-success').removeClass('show'), 3000);
+    //     GKP.showToast('Perubahan berhasil disimpan!', 'success');
+    // });
+    /* ── Tampilkan pesan sukses dari Laravel ───────────────── */
+    const successMessage = $('#success-message').val();
+
+    if (successMessage) {
         $('#save-success').addClass('show');
-        setTimeout(() => $('#save-success').removeClass('show'), 3000);
-        GKP.showToast('Perubahan berhasil disimpan!', 'success');
-    });
+
+        setTimeout(function () {
+            $('#save-success').removeClass('show');
+        }, 3000);
+
+        GKP.showToast(successMessage, 'success');
+    }
 
     /* ── Toggle show/hide password ────────────────────────── */
     $(document).on('click', '.pw-toggle', function () {
@@ -30,7 +42,7 @@ $(function () {
         const lama = $('#pw-lama').val();
         const baru = $('#pw-baru').val();
         if (!lama || !baru) { GKP.showToast('Isi password lama dan baru.', 'error'); return; }
-        if (baru.length < 8)  { GKP.showToast('Password baru minimal 8 karakter.', 'error'); return; }
+        if (baru.length < 8) { GKP.showToast('Password baru minimal 8 karakter.', 'error'); return; }
         GKP.showToast('Password berhasil diubah!', 'success');
         $('#pw-lama, #pw-baru').val('');
     });
