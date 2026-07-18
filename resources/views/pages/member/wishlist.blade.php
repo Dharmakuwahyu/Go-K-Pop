@@ -39,7 +39,7 @@
                         <img src="https://images.pexels.com/photos/1762537/pexels-photo-1762537.jpeg?auto=compress&cs=tinysrgb&w=600"
                             alt="{{ $album->title }}" loading="lazy">
                         <div class="album-img-overlay"></div>
-                        <span class="album-slots-badge badge badge-solid-gold">{{ $album->slots_left }} Slots Left</span>
+                        <span class="album-slots-badge badge badge-solid-gold">{{ $album->slots_left }} Sisa Kuota</span>
                     </div>
                     <div class="album-body">
                         <p class="album-group">{{ $album->group_name }}</p>
