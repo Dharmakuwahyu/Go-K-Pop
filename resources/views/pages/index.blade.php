@@ -553,7 +553,7 @@
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                             </svg>
 
-                            <input type="password" class="form-input" id="login-pw" name="password-login"
+                            <input type="password" class="form-input" id="auth-pw" name="password-login"
                                 placeholder="Masukkan password">
                             @error('password-login', 'login')
                                 <small style="color:#ef4444">
