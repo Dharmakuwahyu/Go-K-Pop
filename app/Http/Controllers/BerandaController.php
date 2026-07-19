@@ -10,10 +10,15 @@ use Illuminate\Support\Facades\Auth;
 class BerandaController extends Controller
 {
     public function memberBeranda() {
+
+        // Mengambil maksimal 6 campaign terbaru
         $albums = Album::with([
             'variants',
             'members',
-        ])->get();
+        ])
+        ->latest()
+        ->take(6)
+        ->get();
         
         // menampilkan data album yang dilike
         $profile = Auth::user()->profile;
