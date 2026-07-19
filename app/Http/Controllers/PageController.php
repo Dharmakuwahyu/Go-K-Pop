@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Album;
 use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
@@ -17,7 +18,12 @@ class PageController extends Controller
 
             return redirect()->route('member.catalog');
         }
+
+        $albums = Album::with([
+            'variants',
+            'members',
+        ])->get();
         
-        return view('pages.index');
+        return view('pages.index', compact('albums'));
     }
 }
