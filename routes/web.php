@@ -52,6 +52,7 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/payment', [AdminPaymentController::class, 'adminPayment'])->name('admin.payment');
     Route::post('/admin/payment/{payment}/approve', [AdminPaymentController::class, 'approve'])->name('admin.payment.approve');
     Route::post('/admin/payment/{payment}/reject', [AdminPaymentController::class, 'reject'])->name('admin.payment.reject');
+    Route::post('/admin/payment/{order}/next-phase',[AdminPaymentController::class, 'nextPhase'])->name('admin.payment.nextPhase');
 
     Route::get('/admin/order', [AdminOrderController::class, 'adminOrder'])->name('admin.order');
     Route::get('/admin/order/data', [AdminOrderController::class, 'getOrders'])->name('admin.order.data');

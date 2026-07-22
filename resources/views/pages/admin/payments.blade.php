@@ -43,7 +43,7 @@
                         </svg>
                         Lihat Bukti
                     </button>
-                    <button class="btn-approve" data-pay-id="pay-{{ $payment->id }}"><svg width="14" height="14"
+                    <button class="btn-approve btn-payment-approve" data-pay-id="pay-{{ $payment->id }}"><svg width="14" height="14"
                             fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <polyline points="20 6 9 17 4 12" />
                         </svg> Approve</button>
@@ -61,6 +61,73 @@
         @endforelse
 
     </div><!-- /#payment-list -->
+
+    <br><hr class="admin-divider"><br>
+
+    <h2 class="admin-panel-title" style="margin-top:40px">
+        Tahap Pembayaran Berikutnya
+    </h2>
+
+    <p class="admin-panel-sub">
+        Buka tahap pembayaran berikutnya setelah pembayaran sebelumnya berhasil diverifikasi.
+    </p>
+
+    <div id="next-phase-list">
+
+        @forelse($nextPhaseOrders as $order)
+            <div class="payment-card">
+
+                <div class="payment-info">
+
+                    <div class="payment-id">
+                        {{ $order->order_code }}
+                    </div>
+
+                    <div class="payment-buyer">
+                        {{ $order->buyer_name }}
+                    </div>
+
+                    <div class="payment-album">
+                        {{ $order->album->group_name }}
+                        -
+                        {{ $order->album->title }}
+                    </div>
+
+                    <div class="payment-date">
+                        Status :
+                        <strong>{{ $order->status_label }}</strong>
+                    </div>
+
+                </div>
+
+                <div class="payment-actions">
+
+                    @if ($order->status == 'dp1_confirmed')
+                        <button class="btn-approve btn-open-phase" data-order-id="{{ $order->id }}">
+
+                            Buka Pembayaran DP 2
+
+                        </button>
+                    @elseif($order->status == 'dp2_confirmed')
+                        <button class="btn-approve btn-open-phase" data-order-id="{{ $order->id }}">
+
+                            Buka Pelunasan
+
+                        </button>
+                    @endif
+
+                </div>
+
+            </div>
+
+        @empty
+
+            <div class="empty-state">
+                <p>Tidak ada tahap pembayaran yang perlu dibuka.</p>
+            </div>
+        @endforelse
+
+    </div>
 @endsection
 
 

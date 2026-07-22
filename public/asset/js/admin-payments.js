@@ -25,7 +25,7 @@ $(function () {
     });
 
     /* ── Approve ──────────────────────────────────────────── */
-    $(document).on('click', '.btn-approve', function () {
+    $(document).on('click', '.btn-payment-approve', function () {
         const $btn = $(this);
         const payId = $btn.data('pay-id').replace('pay-', '');
 
@@ -47,7 +47,22 @@ $(function () {
 
                 GKP.showToast(response.message, 'success');
 
-                location.reload();
+                // location.reload();
+                // Hapus card pembayaran yang sudah diverifikasi
+                $btn.closest('.payment-card').fadeOut(300, function () {
+                    $(this).remove();
+                });
+
+                // Ambil ulang halaman payment
+                $.get('/admin/payment', function (html) {
+
+                    // Ambil daftar tahap berikutnya dari halaman yang baru
+                    const nextPhase = $(html).find('#next-phase-list').html();
+
+                    // Ganti isi yang sekarang
+                    $('#next-phase-list').html(nextPhase);
+
+                });
 
             },
 
@@ -66,23 +81,6 @@ $(function () {
         });
 
     });
-    // $(document).on('click', '.btn-approve', function () {
-    //     const payId = $(this).data('pay-id');
-    //     const $card = $('#' + payId);
-
-    //     // Update badge ke approved
-    //     $card.find('.payment-id .badge')
-    //         .removeClass('badge-yellow')
-    //         .addClass('badge-green')
-    //         .html('<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Approved');
-
-    //     // Sembunyikan tombol aksi
-    //     $card.find('.payment-actions').html(
-    //         '<span style="font-size:.875rem;color:var(--neon-400);font-weight:600">✓ Pembayaran Dikonfirmasi</span>'
-    //     );
-
-    //     GKP.showToast('Pembayaran berhasil dikonfirmasi!', 'success');
-    // });
 
 
     /* ── Buka Reject Modal ────────────────────────────────── */
@@ -140,29 +138,46 @@ $(function () {
         });
 
     });
-    // $('#btn-reject-confirm').on('click', function () {
-    //     const payId = $('#reject-pay-id').val();
-    //     const reason = $('#reject-reason').val().trim();
 
-    //     if (!reason) {
-    //         GKP.showToast('Isi alasan penolakan terlebih dahulu.', 'error');
-    //         return;
-    //     }
+    /* ============================
+       Buka Tahap Pembayaran Berikutnya
+    ============================ */
 
-    //     const $card = $('#' + payId);
+    $(document).on('click', '.btn-open-phase', function () {
 
-    //     // Update badge ke rejected
-    //     $card.find('.payment-id .badge')
-    //         .removeClass('badge-yellow')
-    //         .addClass('badge-accent')
-    //         .html('<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Ditolak');
+        const btn = $(this);
+        const orderId = btn.data('order-id');
 
-    //     $card.find('.payment-actions').html(
-    //         '<span style="font-size:.875rem;color:var(--accent-400);font-weight:600">✗ Pembayaran Ditolak</span>'
-    //     );
+        $.ajax({
 
-    //     $('#reject-modal').removeClass('open');
-    //     GKP.showToast('Pembayaran ditolak. Notifikasi dikirim ke pembeli.', 'error');
-    // });
+            url: `/admin/payment/${orderId}/next-phase`,
+            type: 'POST',
+
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+
+            success: function (response) {
+
+                GKP.showToast(response.message, 'success');
+
+                btn.closest('.payment-card').fadeOut(300, function () {
+                    $(this).remove();
+                });
+
+            },
+
+            error: function (xhr) {
+
+                GKP.showToast(
+                    xhr.responseJSON?.message ?? 'Terjadi kesalahan.',
+                    'error'
+                );
+
+            }
+
+        });
+
+    });
 
 });

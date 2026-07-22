@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,18 @@ class AdminPaymentController extends Controller
             ->latest('uploaded_at')
             ->get();
 
-        return view('pages.admin.payments', compact('payments'));
+        $nextPhaseOrders = Order::with([
+            'album',
+            'buyer',
+        ])
+            ->whereIn('status', [
+                'dp1_confirmed',
+                'dp2_confirmed',
+            ])
+            ->latest('created_at')
+            ->get();
+
+        return view('pages.admin.payments', compact('payments', 'nextPhaseOrders'));
     }
 
     public function approve(Payment $payment)
@@ -70,6 +82,31 @@ class AdminPaymentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Pembayaran berhasil ditolak.',
+        ]);
+    }
+
+    public function nextPhase(Order $order)
+    {
+        if (! in_array($order->status, [
+            'dp1_confirmed',
+            'dp2_confirmed',
+        ])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Status pesanan tidak valid.',
+            ], 422);
+        }
+
+        $order->status = match ($order->status) {
+            'dp1_confirmed' => 'pending_dp2',
+            'dp2_confirmed' => 'pending_pelunasan',
+        };
+
+        $order->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tahap pembayaran berhasil dibuka.',
         ]);
     }
 }
