@@ -5,6 +5,7 @@ use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class AdminPaymentController extends Controller
 {
@@ -58,6 +59,17 @@ class AdminPaymentController extends Controller
         $payment->verified_by = $profile->id;
         $payment->verified_at = now();
 
+        // Hapus file bukti transfer
+        if (
+            $payment->proof_image_url &&
+            Storage::disk('public')->exists('payments/' . $payment->proof_image_url)
+        ) {
+            Storage::disk('public')->delete('payments/' . $payment->proof_image_url);
+        }
+
+        // Kosongkan nama file di database
+        $payment->proof_image_url = null;
+
         $payment->save();
 
         return response()->json([
@@ -68,16 +80,32 @@ class AdminPaymentController extends Controller
 
     public function reject(Request $request, Payment $payment)
     {
+        if ($payment->status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pembayaran ini sudah diproses.',
+            ], 422);
+        }
+
         $request->validate([
             'reason' => ['required', 'max:255'],
         ]);
 
-        $payment->update([
-            'status'        => 'rejected',
-            'reject_reason' => $request->reason,
-            'verified_by'   => Auth::user()->profile->id,
-            'verified_at'   => now(),
-        ]);
+        // Hapus file bukti transfer
+        if (
+            $payment->proof_image_url &&
+            Storage::disk('public')->exists('payments/' . $payment->proof_image_url)
+        ) {
+            Storage::disk('public')->delete('payments/' . $payment->proof_image_url);
+        }
+
+        $payment->status          = 'rejected';
+        $payment->reject_reason   = $request->reason;
+        $payment->verified_by     = Auth::user()->profile->id;
+        $payment->verified_at     = now();
+        $payment->proof_image_url = null;
+
+        $payment->save();
 
         return response()->json([
             'success' => true,
