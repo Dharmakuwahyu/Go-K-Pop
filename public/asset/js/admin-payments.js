@@ -4,6 +4,23 @@
  */
 $(function () {
 
+    // merender ulang halaman payment
+    function refreshPaymentPage() {
+
+        $.get('/admin/payment', function (html) {
+
+            $('#payment-list').html(
+                $(html).find('#payment-list').html()
+            );
+
+            $('#next-phase-list').html(
+                $(html).find('#next-phase-list').html()
+            );
+
+        });
+
+    }
+
     /* ── Lihat Resi (Image Viewer) ────────────────────────── */
     $(document).on('click', '.btn-view-proof, .payment-proof', function () {
         const img = $(this).data('img');
@@ -47,22 +64,8 @@ $(function () {
 
                 GKP.showToast(response.message, 'success');
 
-                // location.reload();
-                // Hapus card pembayaran yang sudah diverifikasi
-                $btn.closest('.payment-card').fadeOut(300, function () {
-                    $(this).remove();
-                });
-
                 // Ambil ulang halaman payment
-                $.get('/admin/payment', function (html) {
-
-                    // Ambil daftar tahap berikutnya dari halaman yang baru
-                    const nextPhase = $(html).find('#next-phase-list').html();
-
-                    // Ganti isi yang sekarang
-                    $('#next-phase-list').html(nextPhase);
-
-                });
+                refreshPaymentPage();
 
             },
 
@@ -124,7 +127,9 @@ $(function () {
                 // Toast
                 GKP.showToast(response.message, 'error');
 
-                location.reload();
+                // Ambil ulang halaman payment
+                refreshPaymentPage();
+
             },
             error: function (xhr) {
                 let message = 'Terjadi kesalahan.';
@@ -161,9 +166,8 @@ $(function () {
 
                 GKP.showToast(response.message, 'success');
 
-                btn.closest('.payment-card').fadeOut(300, function () {
-                    $(this).remove();
-                });
+                // Ambil ulang halaman payment
+                refreshPaymentPage();
 
             },
 
