@@ -72,6 +72,7 @@ class ShipmentController extends Controller
 
         $order->update([
             'status' => 'shipped',
+            'cargo_status' => 'dikirim',
         ]);
 
         return response()->json([
