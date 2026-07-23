@@ -63,6 +63,7 @@ Route::middleware('admin')->group(function () {
     Route::post('/admin/sortingpc/save', [SortingController::class, 'saveSorting'])->name('admin.sorting.save');
 
     Route::get('/admin/shipment', [ShipmentController::class, 'adminShipment'])->name('admin.shipment');
+    Route::post('/admin/shipment/update-cargo', [ShipmentController::class, 'updateCargo'])->name('admin.shipment.updateCargo');
     Route::post('/admin/shipment/update-resi', [ShipmentController::class, 'updateResi'])->name('admin.shipment.updateResi');
 
     Route::get('/admin/store-setting', [StoreSettingController::class, 'adminStoreSetting'])->name('admin.setting');

@@ -15,9 +15,9 @@
             <div class="select-wrap" style="flex:1;min-width:200px">
                 <select class="form-select" id="cargo-status-select">
                     <option value="">Pilih status kargo</option>
-                    <option value="korea">Di Gudang Korea</option>
-                    <option value="otw">Perjalanan Laut OTW Indo</option>
-                    <option value="tiba">Tiba di Indonesia</option>
+                    <option value="di_gudang_korea" {{ $currentCargoStatus == 'di_gudang_korea' ? 'selected' : '' }}>Di Gudang Korea</option>
+                    <option value="otw_indonesia" {{ $currentCargoStatus == 'otw_indonesia' ? 'selected' : '' }}>Perjalanan Laut OTW Indo</option>
+                    <option value="tiba_indonesia" {{ $currentCargoStatus == 'tiba_indonesia' ? 'selected' : '' }}>Tiba di Indonesia</option>
                 </select>
                 <svg class="select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <polyline points="6 9 12 15 18 9" />

@@ -17,7 +17,41 @@ class ShipmentController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return view('pages.admin.logistics', compact('orders'));
+        $currentCargoStatus = Order::whereIn('status', [
+            'pending_dp1',
+            'dp1_confirmed',
+            'pending_dp2',
+            'dp2_confirmed',
+            'pending_pelunasan',
+            'pelunasan_confirmed',
+        ])
+            ->value('cargo_status');
+
+        return view('pages.admin.logistics', compact('orders', 'currentCargoStatus'));
+    }
+
+    public function updateCargo(Request $request)
+    {
+        $request->validate([
+            'cargo_status' => ['required'],
+        ]);
+
+        Order::whereIn('status', [
+            'pending_dp1',
+            'dp1_confirmed',
+            'pending_dp2',
+            'dp2_confirmed',
+            'pending_pelunasan',
+            'pelunasan_confirmed',
+        ])
+            ->update([
+                'cargo_status' => $request->cargo_status,
+            ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status kargo berhasil diperbarui.',
+        ]);
     }
 
     public function updateResi(Request $request)
