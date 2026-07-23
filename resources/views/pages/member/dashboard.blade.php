@@ -42,38 +42,63 @@
                 </div>
                 <div class="order-card-body">
                     <!-- Cargo -->
+                    @php
+                        $step = match ($order->cargo_status) {
+                            'di_gudang_korea' => 1,
+                            'otw_indonesia' => 2,
+                            'tiba_indonesia' => 3,
+                            'dikirim' => 4,
+                            default => 0, // belum_dikirim
+                        };
+                    @endphp
                     <p style="font-size:.875rem;font-weight:600;color:var(--slate-300);margin-bottom:10px">Status Kargo</p>
                     <div class="cargo-tracker" style="margin-bottom:1.5rem">
                         <div class="cargo-step">
-                            <div class="cargo-dot"><svg width="12" height="12" fill="none" stroke="#64748b"
-                                    stroke-width="2.5" viewBox="0 0 24 24">
+                            <div
+                                class="cargo-dot  @if ($step > 1) done @elseif($step == 1) active @endif">
+                                <svg width="12" height="12" fill="none"
+                                    stroke="{{ $step >= 1 ? '#fff' : '#64748b' }}" stroke-width="2.5" viewBox="0 0 24 24">
                                     <polyline points="20 6 9 17 4 12" />
-                                </svg></div>
-                            <div class="cargo-label">Di Korea</div>
+                                </svg>
+                            </div>
+                            <div class="cargo-label"
+                                @if ($step > 1) style="color:var(--neon-400)" @elseif ($step == 1) style="color:var(--accent-400)" @endif>
+                                Di Korea</div>
                         </div>
-                        <div class="cargo-line"></div>
+                        <div class="cargo-line {{ $step > 1 ? 'done' : '' }}"></div>
                         <div class="cargo-step">
-                            <div class="cargo-dot"><svg width="12" height="12" fill="none" stroke="#64748b"
-                                    stroke-width="2.5" viewBox="0 0 24 24">
+                            <div
+                                class="cargo-dot @if ($step > 2) done @elseif($step == 2) active @endif">
+                                <svg width="12" height="12" fill="none"
+                                    stroke="{{ $step >= 2 ? '#fff' : '#64748b' }}" stroke-width="2.5" viewBox="0 0 24 24">
                                     <polyline points="20 6 9 17 4 12" />
-                                </svg></div>
-                            <div class="cargo-label">OTW Indo</div>
+                                </svg>
+                            </div>
+                            <div class="cargo-label"
+                                @if ($step > 2) style="color:var(--neon-400)" @elseif ($step == 2) style="color:var(--accent-400)" @endif>
+                                OTW Indo</div>
                         </div>
-                        <div class="cargo-line"></div>
+                        <div class="cargo-line {{ $step > 2 ? 'done' : '' }}"></div>
                         <div class="cargo-step">
-                            <div class="cargo-dot"><svg width="12" height="12" fill="none" stroke="#64748b"
-                                    stroke-width="2.5" viewBox="0 0 24 24">
+                            <div
+                                class="cargo-dot @if ($step > 3) done @elseif($step == 3) active @endif">
+                                <svg width="12" height="12" fill="none"
+                                    stroke="{{ $step >= 3 ? '#fff' : '#64748b' }}" stroke-width="2.5" viewBox="0 0 24 24">
                                     <polyline points="20 6 9 17 4 12" />
-                                </svg></div>
-                            <div class="cargo-label">Tiba Indo</div>
+                                </svg>
+                            </div>
+                            <div class="cargo-label"
+                                @if ($step > 3) style="color:var(--neon-400)" @elseif ($step == 3) style="color:var(--accent-400)" @endif>Tiba Indo</div>
                         </div>
-                        <div class="cargo-line"></div>
+                        <div class="cargo-line {{ $step > 3 ? 'done' : '' }}"></div>
                         <div class="cargo-step">
-                            <div class="cargo-dot"><svg width="12" height="12" fill="none" stroke="#64748b"
+                            <div class="cargo-dot @if ($step >= 4) done @endif"><svg width="12"
+                                    height="12" fill="none" stroke="{{ $step >= 4 ? '#fff' : '#64748b' }}"
                                     stroke-width="2.5" viewBox="0 0 24 24">
                                     <polyline points="20 6 9 17 4 12" />
                                 </svg></div>
-                            <div class="cargo-label">Dikirim</div>
+                            <div class="cargo-label"
+                                @if ($step >= 4) style="color:var(--accent-400)" @endif>Dikirim</div>
                         </div>
                     </div>
                     <!-- Rincian -->
@@ -198,7 +223,8 @@
                     {{-- tampilkan informasi alamat, kurir, dan no resi jika pesanan sudah dikirim oleh admin --}}
                     @if ($order->status == 'shipped' && $order->shipment)
                         <!-- Verified badge -->
-                        <div style="display:flex;align-items:flex-start;gap:12px;padding:1rem;border-radius:12px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25)">
+                        <div
+                            style="display:flex;align-items:flex-start;gap:12px;padding:1rem;border-radius:12px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25)">
                             <svg width="20" height="20" fill="none" stroke="#22c55e" stroke-width="2"
                                 viewBox="0 0 24 24"
                                 style="flex-shrink:0;margin-top:2px;animation:pulseGreen 2.5s infinite">
@@ -277,8 +303,8 @@
 
 
         <!-- ══════════════════════════════════════════
-                                                                                                             ORD-001 — FASE 1: Menunggu DP 1
-                                                                                                        ═══════════════════════════════════════════ -->
+                                                                                                                                                         ORD-001 — FASE 1: Menunggu DP 1
+                                                                                                                                                    ═══════════════════════════════════════════ -->
         {{-- <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -655,8 +681,8 @@
         </div> --}}
 
         <!-- ══════════════════════════════════════════
-                                                                                                             ORD-004 — FASE 4: Menunggu Pelunasan
-                                                                                                        ═══════════════════════════════════════════ -->
+                                                                                                                                                         ORD-004 — FASE 4: Menunggu Pelunasan
+                                                                                                                                                    ═══════════════════════════════════════════ -->
         {{-- <div class="order-card">
             <div class="order-card-header">
                 <div>
@@ -767,8 +793,8 @@
         </div> --}}
 
         <!-- ══════════════════════════════════════════
-                                                                                                             ORD-005 — FASE 5: Shipped / Selesai
-                                                                                                        ═══════════════════════════════════════════ -->
+                                                                                                                                                         ORD-005 — FASE 5: Shipped / Selesai
+                                                                                                                                                    ═══════════════════════════════════════════ -->
         {{-- <div class="order-card">
             <div class="order-card-header">
                 <div>
